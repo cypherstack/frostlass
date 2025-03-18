@@ -1,0 +1,1521 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx} 
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{enumerate}
+\usepackage[hidelinks]{hyperref}
+\usepackage[dvipsnames]{xcolor} 
+\usepackage{cleveref}
+\usepackage{aliascnt}
+\usepackage{multicol}
+\usepackage{tikz-cd}
+\usepackage{titling}
+
+ \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\theoremstyle{definition}
+
+\newtheorem{theorem}{Theorem}[section]
+\newcommand{\theoremqed}{\hfill \qedsymbol}
+
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\crefname{lemma}{Lemma}{Lemmas}
+
+\newaliascnt{cor}{theorem}
+\newtheorem{cor}[cor]{Corollary}
+\aliascntresetthe{cor}
+\crefname{cor}{Corollary}{Corollaries}
+\AtEndEnvironment{lemma}{\theoremqed}
+
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\crefname{definition}{Definition}{Definitions}
+
+\newaliascnt{example}{theorem}
+\newtheorem{example}[example]{Example}
+\aliascntresetthe{example}
+\crefname{example}{Example}{Examples}
+
+\newaliascnt{remark}{theorem}
+\newtheorem{remark}[remark]{Remark}
+\aliascntresetthe{remark}
+\crefname{remark}{Remark}{Remarks}
+
+
+\newcommand{\N}{\bbn}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\G}{\mathbb{G}}
+\newcommand{\sk}{\texttt{sk}}
+\newcommand{\sn}{\texttt{sn}}
+\newcommand{\pk}{\texttt{pk}}
+\newcommand{\vk}{\texttt{vk}}
+\newcommand{\pn}{\texttt{pn}}
+\newcommand{\lt}{\texttt{lt}}
+\newcommand{\tlt}{\texttt{tlt}}
+\newcommand{\sck}{\texttt{sck}}
+\newcommand{\pck}{\texttt{pck}}
+\newcommand{\tvk}{\texttt{tvk}}
+\newcommand{\ring}{\texttt{ring}}
+\newcommand{\SK}{\underline{\texttt{sk}}}
+\newcommand{\VK}{\underline{\texttt{vk}}}
+\newcommand{\TVK}{\underline{\texttt{tvk}}}
+\newcommand{\LT}{\underline{\texttt{lt}}}
+\newcommand{\dst}{\texttt{dst}}
+\newcommand{\ch}{\texttt{ch}}
+\newcommand{\resp}{\texttt{resp}}
+\newcommand{\sig}{\texttt{sig}}
+\newcommand{\psig}{\texttt{psig}}
+\newcommand{\psigs}{\underline{\texttt{psig}}}
+\newcommand{\seed}{\texttt{seed}}
+\newcommand{\com}{\texttt{com}}
+\newcommand{\bitstrings}{\left\{0,1\right\}^*}
+\newcommand{\Zq}{\mathbb{Z}_q}
+\newcommand{\bbn}{\mathbb{N}}
+\newcommand{\secpar}{\lambda}
+\newcommand{\rng}{F_{\texttt{PRNG}}}
+\newcommand{\params}{\texttt{pars}}
+\newcommand{\msg}{\texttt{msg}}
+\newcommand{\setup}{\texttt{PGen}}
+\newcommand{\setupI}{(\secpar)}
+\newcommand{\setupO}{\params_\secpar}
+\newcommand{\setupIO}{\setup\setupI\to\setupO}
+\newcommand{\keygen}{\texttt{KGen}}
+\newcommand{\keygenI}{(\setupO,n,r)}
+\newcommand{\keygenIshort}{(n,r)}
+\newcommand{\keygenO}{(\tvk,\VK,\SK)}
+\newcommand{\keygenObase}{(\tvk, \VK, \SK)}
+\newcommand{\keygenIO}{\keygen\keygenI\to\keygenO}
+\newcommand{\keygenIObase}{\keygen\keygenI\to\keygenObase \in \mathcal{TVK} \times \mathcal{VK}^n \times \mathcal{SK}^n}
+\newcommand{\preproc}{\texttt{PreProc}}
+\newcommand{\preprocI}{(\setupO,\msg,\ring,\VK,\LT,\SK)}
+\newcommand{\preprocO}{\com}
+\newcommand{\preprocIO}{\preproc\preprocI\to\preprocO}
+\newcommand{\sign}{\texttt{Sign}}
+\newcommand{\aux}{\texttt{aux}}
+\newcommand{\signI}{(\setupO,\msg,\ring,\VK,\LT,\sk)}
+\newcommand{\signIbase}{(\setupO,\msg,\ring,\VK,\sk)}
+\newcommand{\signO}{\psig}
+\newcommand{\signIO}{\sign\signI\to\signO}
+\newcommand{\signIObase}{\sign\signIbase\to\signO}
+\newcommand{\combine}{\texttt{Combine}}
+\newcommand{\PSIG}{\underline{\psig}}
+\newcommand{\combineI}{(\setupO,\msg,\ring,\VK,\LT,\PSIG)}
+\newcommand{\combineIbase}{(\setupO,\msg,\ring,\VK,\PSIG)}
+\newcommand{\combineO}{\sig}
+\newcommand{\combineIO}{\combine\combineI\to\combineO}
+\newcommand{\combineIObase}{\combine\combineIbase\to\combineO}
+\newcommand{\verify}{\texttt{Vf}}
+\newcommand{\verifyI}{(\setupO,\msg,\ring,\sig)}
+\newcommand{\verifyO}{b}
+\newcommand{\verifyIO}{\verify\verifyI\to\verifyO}
+\newcommand{\verifyIObase}{\verify\verifyI\to\verifyO}
+\newcommand{\link}{\texttt{Link}}
+\newcommand{\linkI}{(\setupO,\sig,\sig^\prime)}
+\newcommand{\linkO}{\verifyO}
+\newcommand{\linkIO}{\link\linkI\to\linkO}
+\newcommand{\linkIObase}{\link\linkI\to\linkO}
+\newcommand{\verifyshare}{\texttt{VfSh}}
+\newcommand{\verifyshareI}{(\setupO,\msg,\ring,\VK,\psig)}
+\newcommand{\verifyshareO}{\verifyO}
+\newcommand{\verifyshareIO}{\verifyshare\verifyshareI\to\verifyshareO}
+ \newcommand{\verifyshareIObase}{\verifyshare\verifyshareI\to\verifyshareO}
+\newcommand{\chk}{\texttt{chk}}
+\newcommand{\polysecpar}{O(\text{poly}(\secpar))}
+\newcommand{\negl}{\text{negl}(\secpar)}
+\newcommand{\FROST}{\texttt{FROST}}
+\newcommand{\linkingtag}{\mathfrak{T}}
+\newcommand{\sample}{\overset{\$}{\leftarrow}}
+\newcommand{\fork}{\texttt{Fork}}
+\newcommand{\corruptionOracle}{\mathcal{O}_{\texttt{corrupt}}}
+\newcommand{\signingOracle}{\mathcal{O}_{\sign}}
+\newcommand{\keyOracle}{\mathcal{O}_{\texttt{key}}}
+\newcommand{\challengeKeySet}{\mathcal{L}_{\texttt{key}}}
+\newcommand{\corruptedTotalKeys}{\mathcal{L}_{\texttt{corrupt}}^{\texttt{tot}}}
+\newcommand{\corruptedKeyShareSet}{\mathcal{L}_{\texttt{corrupt}}^{\texttt{sh}}}
+\newcommand{\corruptedKeySet}{\mathcal{L}_{\texttt{corrupt}}}
+\newcommand{\signaturequery}{(\texttt{dst}_{j} \mid \mid \ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}} \mid \mid \mathfrak{W} \mid \mid \underline{W} \mid \mid \underline{\mu} \mid \mid L_{j} \mid \mid R_{j} \mid \mid \msg)}
+\newcommand{\signaturequerystar}{(\texttt{dst}_{j^*} \mid \mid \ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}} \mid \mid \mathfrak{W} \mid \mid \underline{W} \mid \mid \underline{\mu} \mid \mid L_{j^*} \mid \mid R_{j^*} \mid \mid \msg)}
+
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\Large#1\end{center}
+    \vskip0.5em}%
+}
+
+
+% Used to format table in Rosetta Stone
+\usepackage{booktabs,array}
+\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+\newcolumntype{C}[1]{>{\PreserveBackslash\centering}p{#1}}
+\newcolumntype{R}[1]{>{\PreserveBackslash\raggedleft}p{#1}}
+\newcolumntype{L}[1]{>{\PreserveBackslash\raggedright}p{#1}}
+
+
+% Used to format the pseudocode blocks
+\usepackage{caption,subcaption}
+\newcommand{\Fp}{\mathbb{F}_p}
+\newcommand{\rar}{\rightarrow}
+\newcommand{\lar}{\leftarrow}
+\newcommand{\lsamp}{\xleftarrow{\$}}
+
+
+% Adds the oracle and game environments
+\DeclareCaptionType[fileext=los,placement={!ht}]{oracle}
+\DeclareCaptionType[fileext=los,placement={!ht}]{game}
+
+
+
+
+\usepackage{lmodern}                     % Improved font rendering
+\usepackage{geometry}                    % Page geometry
+\geometry{margin=1in}                    % Set margins to your preference
+\usepackage{enumitem}                    % Better control of list environments
+\usepackage{makeidx}                     % For creating an index
+\makeindex                               % Initialize index creation
+\usepackage[toc, acronym]{glossaries}    % Glossaries and acronyms 
+\usepackage{mdframed}                    % For framed boxes
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+
+% Added this to allow for subsubsubsections
+\usepackage{titlesec}
+
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand{\thesubsubsubsection}{\thesubsubsection.\arabic{subsubsubsection}}  % Number format
+
+% Define the subsubsubsection command
+\newcommand{\subsubsubsection}[1]{%
+  \refstepcounter{subsubsubsection}  % Increment the counter
+  \paragraph*{\thesubsubsubsection\ #1} % Format the section title
+}
+
+
+% -------------------- Glossary Entries --------------------%
+
+    \newglossaryentry{monero-wallet (v0.1.0)}{
+        name={\protect\texttt{monero-wallet (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at  \path{/wallet/src/lib.rs}. Handles all wallet functionality}
+    }
+
+    \newglossaryentry{monero-simple-request-rpc (v0.1.0)}{
+        name={\protect\texttt{monero-simple-request-rpc (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at  \path{/rpc/simple-request/src/lib.rs}. Default RPC to avoid external dependences, e.g. reqwest}
+    }
+    
+    \newglossaryentry{monero-rpc (v0.1.0)}{
+        name={\protect\texttt{monero-rpc (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/rpc/src/lib.rs}, employing no file or directory modules. Handles RPC calls for interacting on the Monero network.}
+    }
+
+    \newglossaryentry{monero-serai (v0.1.4-alpha)}{
+        name={\protect\texttt{monero-serai (v0.1.4-alpha)}},
+        description={A standard library crate, with the corresponding entry point at \path{/src/lib.rs}. This is the overall transaction library.}
+    }
+
+    \newglossaryentry{monero-address (v0.1.0)}{
+        name={\protect\texttt{monero-address (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/wallet/address/src/lib.rs}. Handles Monero addresses.}
+    }
+
+    \newglossaryentry{monero-borromean (v0.1.0)}{
+        name={\protect\texttt{monero-borromean (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/ringct/borromean/src/lib.rs}. Employs no modules, and untested. Handles Borromean signatures and Borromean range proofs.}
+    }
+
+    \newglossaryentry{monero-bulletproofs (v0.1.0)}{
+        name={\protect\texttt{monero-bulletproofs (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/ringct/bulletproofs/src/lib.rs}. Handles original bulletproofs and bulletproofs plus.}
+    }
+
+    \newglossaryentry{monero-clsag (v0.1.0)}{
+        name={\protect\texttt{monero-clsag (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/ringct/clsag/src/lib.rs}. Handles CLSAG ring signatures and a FROST-like thresholdization.}
+    }
+
+    \newglossaryentry{monero-mlsag (v0.1.0)}{
+        name={\protect\texttt{monero-mlsag (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/ringct/mlsag/src/lib.rs}. Employs no modules, and untested. Handles MLSAG ring signatures.}
+    }
+
+    \newglossaryentry{monero-primitives (v0.1.0)}{
+        name={\protect\texttt{monero-primitives (v0.1.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/primitives/src/lib.rs}.}
+    }
+
+    \newglossaryentry{monero-generators (v0.4.0)}{
+        name={\protect\texttt{monero-generators (v0.4.0)}},
+        description={A standard library crate, with the corresponding entry point at \path{/primitives/src/lib.rs}.  Handles hashing to elliptic curve group elements, and computing fixed generators for use in the Monero protocol}
+    }
+
+    \newglossaryentry{monero-io (v0.1.0)}{
+        name={\protect\texttt{monero-io (v0.1.0)}},
+        description={A standard library crate with entry point at \path{/io/src/lib.rs}. Employs no modules, and untested.  Handles reading and writing various data structures used in Monero protocol computations (e.g.\ bytes, scalars, group elements, lists whose entries are the same type)}
+    }
+    
+    \newglossaryentry{decoys-module}{
+        name={\protect\path{/wallet/src/decoys.rs}},
+        description={The module handling decoys.}
+    }
+
+    \newglossaryentry{extra-module}{
+        name={\protect\path{/wallet/src/extra.rs}},
+        description={The module handling the extra field of transactions.}
+    }
+
+    \newglossaryentry{output-module}{
+        name={\protect\path{/wallet/src/output.rs}},
+        description={The module handling transaction outputs.}
+    }
+
+    \newglossaryentry{scan-module}{
+        name={\protect\path{/wallet/src/scan.rs}},
+        description={The module handling scanning.}
+    }
+
+    \newglossaryentry{view-pair-module}{
+        name={\protect\path{/wallet/src/view_pair.rs}},
+        description={The module handling the (public-spend, private-view) keys.}
+    }
+
+    \newglossaryentry{send-module}{
+        name={\protect\path{/wallet/src/send/mod.rs}},
+        description={The module handling the sending transactions.}
+    }
+
+    \newglossaryentry{block-module}{
+        name={\protect\path{/src/block.rs}},
+        description={The module handling blocks.}
+    }
+
+    \newglossaryentry{merkle-module}{
+        name={\protect\path{/src/merkle.rs}},
+        description={Module for handling Merkle trees}
+    }
+
+    \newglossaryentry{ring-signatures-module}{
+        name={\protect\path{/src/ring_signatures.rs}},
+        description={Module for handling ring signatures}
+    }
+
+    \newglossaryentry{ringct-module}{
+        name={\protect\path{/src/ringct.rs}},
+        description={Module for handling ring confidential transactions}
+    }
+
+    \newglossaryentry{transaction-module}{
+        name={\protect\path{/src/transaction.rs}},
+        description={Module for handling transactions}
+    }
+
+    \newglossaryentry{base58-module}{
+        name={\protect\path{/wallet/address/src/base58check.rs}},
+        description={Module for handling base58 enc/dec}
+    }
+
+    \newglossaryentry{monero-serai-entry-point}{
+        name={\protect\path{/src/lib.rs}},
+        description={Module for handling RPC calls for communicating on the Monero network.}.
+    }
+    
+    \newglossaryentry{wallet-tests}{
+        name={\protect\path{/wallet/src/tests/runner/mod.rs}},
+        description={Testing module for \texttt{monero wallet (v0.1.0)}}
+    }
+
+    \newglossaryentry{wallet-entry-point}{
+        name={\protect\path{/wallet/src/lib.rs}},
+        description={The entry point to the \gls{monero-wallet (v0.1.0)} crate}
+    }
+
+    \newglossaryentry{monero-simple-request-rpc-entry-point}{
+        name={\protect\path{/rpc/simple-request/src/lib.rs}},
+        description={The entry point to the \gls{monero-simple-request-rpc (v0.1.0)} crate}
+    }
+    
+    \newglossaryentry{monero-rpc-entry-point}{
+        name={\protect\path{/rpc/src/lib.rs}},
+        description={Module for handling RPC calls for communicating on the Monero network.}.
+    }
+
+    \newglossaryentry{monero-serai-tests}{
+        name={\protect\path{/src/tests/mod.rs}},
+        description={Testing module for handling \gls{monero-serai (v0.1.4-alpha)} tests}
+    }
+
+    \newglossaryentry{address-tests}{
+        name={\protect\path{/wallet/address/src/tests.rs}},
+        description={Testing module for \gls{monero-address (v0.1.0)} tests}
+    }
+    
+    \newglossaryentry{borromean-entry-point}{
+        name={\protect\path{/ringct/borromean/src/lib.rs}},
+        description={Entry point to \gls{monero-borromean (v0.1.0)}}
+    }
+    
+    \newglossaryentry{bulletproofs-entry-point}{
+        name={\protect\path{/ringct/bulletproofs/src/lib.rs}},
+        description={Entry point to \gls{monero-bulletproofs (v0.1.0)}}
+    }
+    
+    \newglossaryentry{bp-batch-verifier-module}{
+        name={\protect\path{/ringct/bulletproofs/src/batch_verifier.rs}},
+        description={Module for handling batch verification of bulletproofs}
+    }
+
+    \newglossaryentry{bp-core-module}{
+        name={\protect\path{/ringct/bulletproofs/src/core.rs}},
+        description={Module for handling the core folding computation of bulletproofs.}
+    }
+
+    \newglossaryentry{bp-point-vector-module}{
+        name={\protect\path{/ringct/bulletproofs/src/point_vector.rs}},
+        description={Module for handling the vectors of group elements in bulletproofs.}
+    }
+
+    \newglossaryentry{bp-scalar-vector-module}{
+        name={\protect\path{/ringct/bulletproofs/src/scalar_vector.rs}},
+        description={Module for handling the vectors of field elements/scalars in bulletproofs.}
+    }
+
+    \newglossaryentry{bp-original-module}{
+        name={\protect\path{/ringct/bulletproofs/src/original/mod.rs}},
+        description={Module for handling the original bulletproofs}
+    }
+
+    \newglossaryentry{bp-plus-module}{
+        name={\protect\path{/ringct/bulletproofs/src/plus/mod.rs}},
+        description={Module for handling bulletproofs plus}
+    }
+
+    \newglossaryentry{bp-test-module}{
+        name={\protect\path{/ringct/bulletproofs/src/plus/mod.rs}},
+        description={Module for handling bulletproofs tests}
+    }
+
+    \newglossaryentry{monero-clsag-entry-point}{
+        name={\protect\path{/ringct/clsag/src/lib.rs}},
+        description={Entry point for \gls{monero-clsag (v0.1.0)}}
+    }
+   
+    \newglossaryentry{clsag-multisig-module}{
+        name={\protect\path{/ringct/clsag/src/multisig.rs}},
+        description={Module for handling CLSAG signatures.}
+    } 
+
+    \newglossaryentry{clsag-tests}{
+        name={\protect\path{/ringct/clsag/src/tests.rs}},
+        description={Test module for CLSAG signatures.}
+    } 
+
+    \newglossaryentry{monero-mlsag-entry-point}{
+        name={\protect\path{/ringct/clsag/src/tests.rs}},
+        description={Entry point for \gls{monero-mlsag (v0.1.0)}}
+    } 
+
+    \newglossaryentry{monero-primitives-entry-point}{
+        name={\protect\path{/primitives/src/lib.rs}},
+        description={Entry point for \gls{monero-primitives (v0.1.0)}}
+    } 
+
+    \newglossaryentry{unreduced-scalar-module}{
+        name={\protect\path{/primitives/src/unreduced_scalar.rs}},
+        description={Module for handling unreduced scalars.}
+    } 
+
+    \newglossaryentry{monero-primitives-tests}{
+        name={\protect\path{/primitives/src/tests.rs}},
+        description={Testing module for \gls{monero-primitives (v0.1.0)}}
+    } 
+
+    \newglossaryentry{monero-generators-entry-point}{
+        name={\protect\path{/generators/src/lib.rs}},
+        description={Entry point for \gls{monero-generators (v0.4.0)}}
+    } 
+
+    \newglossaryentry{hash-to-point-module}{
+        name={\protect\path{/primitives/src/hash_to_point.rs}},
+        description={Module for handling hashing data to elliptic curve group elements}
+    } 
+    
+    \newglossaryentry{monero-generators-tests}{
+        name={\protect\path{/primitives/src/tests/mod.rs}},
+        description={Testing module for \gls{monero-generators (v0.4.0)}}
+    } 
+
+    \newglossaryentry{monero-io-entry-point}{
+        name={\protect\path{/io/src/lib.rs}},
+        description={Entry point for \gls{monero-io (v0.1.0)}}
+    } 
+    
+    \newglossaryentry{monero-address-entry-point}{
+        name={\protect\path{/wallet/address/src/lib.rs}},
+        description={Entry point for \gls{monero-io (v0.1.0)}}
+    } 
+
+    \newglossaryentry{eventuality-module}{
+        name={\protect\path{/wallet/src/send/eventuality.rs}},
+        description={Module for handling \gls{eventualities}}
+    } 
+        
+    \newglossaryentry{send-multisig-module}{
+        name={\protect\path{/wallet/src/send/multisig.rs}},
+        description={Module for handling multisig transactions}
+    } 
+    
+    \newglossaryentry{send-tx-module}{
+        name={\protect\path{/wallet/src/send/tx.rs}},
+        description={Module for handling sending transactions}
+    } 
+    
+    \newglossaryentry{send-tx-keys-module}{
+        name={\protect\path{/wallet/src/send/tx_key.rs}},
+        description={Module for handling keys in sending transactions}
+    } 
+
+    \newglossaryentry{eventualities}{
+        name={Eventualities},
+        description={A struct for handling the eventual output from \gls{SignableTransaction}s.}
+    } 
+
+\newglossaryentry{SignableTransaction}{
+    name={SignableTransaction},
+    description={A struct representing a Monero transaction prepared for signing, containing necessary inputs, outputs, and metadata but without signatures or key images. Located in \path{/wallet/src/send/}, it handles fee calculation and supports transformation into fully signed transactions through both single-signer and FROST multisig processes}
+    }
+
+\title{FROSTLASS: Flexible Ring-Oriented Schnorr-like Thresholdized Linkably Anonymous Signature Scheme}
+\subtitle{Scheme Formalization \& Review of Rust Implementation}
+\author{
+    Joshua Babb\thanks{Cypher Stack} \\ % First line for the first author
+    \and
+    Brandon Goodell\protect\footnotemark[1] \\ % First line for the second author
+    \and
+    Luke Parker \\
+    \and 
+    Rigo Salazar\protect\footnotemark[1] \\ % First line for the third author
+    \and
+    Freeman Slaughter\protect\footnotemark[1] \\
+    \and 
+    Luke Szramowski\protect\footnotemark[1]
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Over the past decades, especially since Shamir's secret sharing and Shoup's threshold signatures, (\cite{shamir1979share}, \cite{shoup2000practical}) research into threshold and multiparty cryptographic schemes of different flavors has become fashionable. In \cite{bellare2006multi}, for example, Bellare and Neven famously proposed a framework to formalize multisignatures and to prove them secure with the generalized forking lemma. 
+
+The general forking lemma, which goes back at least to \cite{li1988analysis}, is useful in proving a wide variety of modern cryptographic schemes secure, including ring signatures preceding \cite{zhang2002id} and the bulletproofs zero-knowledge proving system proposed in \cite{bunz2018bulletproofs}. 
+
+Concise linkable spontaneous anonymous group (CLSAG) signatures, proposed in \cite{clsag} and built from the (LSAG) signatures from \cite{liu2004linkable}, are Schnorr-like ring signatures used in the Monero cryptocurrency protocol.
+A na\"{i}ve thresholdization of CLSAG signatures, called \textit{thring signatures}, was proposed in \cite{goodell2018thring}, building off of the linkable spontaneous anonymous group (LSAG) signatures , which are used in the Monero cryptocurrency protocol. The FROST approach to thresholdizing Schnorr signatures, first described in \cite{komlo2021frost}, is sufficiently flexible to work for CLSAG signatures, and are superior to the thring signatures of \cite{goodell2018thring}.
+
+An opinionated Rust implementation of every major component of the Monero protocol at \cite{SeraiRepo}, written by Luke Parker (kayabaNerve), contains an implementation of FROSTLASS. Herein, we formalize FROSTLASS, present a novel definition of linkability, and prove FROSTLASS strongly unforgeable up to the hardness of the $\kappa$-one-more discrete logarithm problem, and statistically linkable.
+
+\subsection{Change Log}
+
+This document may be updated occasionally, especially if security-sensitive results come to light. We summarize such changes here.
+\begin{itemize}
+\item 15 March 2025. Initial preprint.
+\end{itemize}
+
+\section{Notation and Background Definitions}
+
+\subsection{Notation}
+
+% Notation from \cite{clsag} conflicts with the notation from \cite{frost}, and this scheme was first proposed in \cite{rust} with its own notation. Consequently, we present a ``Rosetta stone'' matching the notation in this paper with these other three sources in Table \cref{table:rosetta_stone}.
+
+% For a set $S$, $\mathcal{P}(S)$ denotes the set of subsets of $S$, and $\mathcal{S}_S$ denotes the symmetric group on $S$. Instead of writing $\mathcal{S}_{[n]}$, we simplify notation by writing $\mathcal{S}_n$. We use $x \sample S$ to indicate $x$ is a single-observation independent sample from the set $S$ under the uniform distribution, and we use $\underline{x} = (x_1, \ldots, x_n) \sample S$ to indicate $n$ independent uniform samples. If $f:S \to T$ is a function, we use $x \mapsto y$ to indicate that $y = f(x)$. For an algorithm $\mathcal{A}$, we use $y \leftarrow \mathcal{A}(x)$ to denote the event that $\mathcal{A}$ inputs $x$ and outputs $y$.
+
+% Let $q$ denote a prime modulus, and let $d \geq 2$.
+% Let $\msg \in \bitstrings$ denote a finite-length bitstring message.
+% We denote the set $\left\{1,2,\ldots,n\right\} = [n]$. We let $\mathcal{S}_n$ denote the symmetric group on $n$ letters.
+% We generally write tuples with an underline, e.g.\ if $n \geq 1$ is an integer and $x_1, \ldots, x_n$ are some objects, we write the tuple $(x_1, \ldots, x_n) = \underline{x}$, with a few exceptions (e.g.\ keys).
+% We abuse subset notation for tuples, so that $\underline{x} \subseteq \underline{y}$ denotes the existence of a permutation $\sigma \in \mathcal{S}_{\texttt{len}(\underline{y})}$ such that $y_{\sigma(i)} = x_i$ for each $1 \leq i \leq \texttt{len}(\underline{x})$.
+% We let $\rng_\gamma$ denote a random number generator with seed $\gamma\in\bitstrings$.
+
+% Let $\Zq$ the equivalence classes of integers modulo $q$, i.e.\ the field with $q$ elements; we refer to elements of $\Zq$ as \textit{scalars}. We typically use miniscule notation $x, y, z, \ldots$ to denote scalars (but not all miniscule variables are scalars).
+% We let $\G$ represent an elliptic curve group with order $q$ written \textit{additively}; we refer to elements of $\G$ as \textit{points}. 
+% We typically use majuscule notation $X, Y, Z, \ldots$ to denote points (but not all majuscule variables are points).
+% Since $\G$ has order $q$, we may handle $\G$ as a $\Zq$ module, with module multiplication of any $G \in \G$ by any $x \in \Zq$ defined by interpreting $x$ as an unsigned integer on $\left\{0, 1, \ldots, q-1\right\}$ and setting $X = xG = \underbrace{G + G + \cdots + G}_{x\text{ summands}}$. 
+% Any fixed $G \in \G$ induces a canonical function $\Zq \to \G$ defined by mapping scalars to points by $x \mapsto xG$. 
+% We use the same character in different cases to describe points corresponding to scalars under this canonical function, i.e.\ $X = xG$, $Y = yG$, etc. 
+
+% Now fix $G \in \G$. 
+% Denote $\underline{G} = (G, G, \ldots, G) \in \G^d$. 
+% We let $-\circ-:\Zq \times \G \to \G$ denote the Hadamard product mapping $(\underline{x}, \underline{Y}) \mapsto (x_iY_i)_i$.
+% Let $H_{\Zq}: \bitstrings \to \Zq$, $H_{\G}:\bitstrings \to \G$, $H_\secpar: \bitstrings \to \left\{0,1\right\}^{\secpar}$ be cryptographic hash functions. We denote domain separating tags $\texttt{dst} \in \bitstrings$ and label them with descriptive subscripts.
+% % We define the \textit{linking tag function} $\phi:\Zq \to \G$ by mapping $x \mapsto xH_{\G}(X)$, where $X = xG$ as above.
+
+
+% In the sequel, a Lagrange interpolation of threshold keyshares is a \textit{threshold combination}, and a linear combination of keys with coefficients decided by random oracle is a \textit{key aggregation}.
+
+% Given a specification of an algorithm, we say the algorithm is \textit{honestly computed} if the execution of the algorithm follows the specification exactly. We say the algorithm is \textit{semi-honestly computed} if all the specified steps occur in the specified order, possibly with other additional steps before, between, or after the specified steps.
+
+ 
+
+
+% Similarly, all algorithms in the sequel may output an indexed symbol in the instance of failure, e.g.\ $\bot_{\sign, \texttt{idx}}, \bot_{\verify, \texttt{idx}}$ for indices $\texttt{idx}$, where the indices indicate distinct causes of failure; we omit these symbols for clarity. 
+
+% Similarly, all algorithms in the sequel may input and output some auxiliary data, e.g.\ $\keygen(n, t, \texttt{aux}_{\keygen,in}) \to (\delta, \texttt{aux}_{\keygen,out})$, but we omit these auxiliary data for clarity except when necessary to specify them.
+
+% Given any randomized algorithm $\mathcal{A}$ which outputs distinct failure symbols or some output $\texttt{out}$, we define the \textit{advantage} of $\mathcal{A}$ to be the probability that $\mathcal{A}$ does not output a failure symbol. We denote this probability with $\texttt{Adv}_\mathcal{A}$.
+
+% In the sequel, we let $t \in \mathbb{R}_{> 0}$ denote a positive real number, we let $\epsilon \in [0,1]$ denote a probability, $n \in \bbn$ denote a number of keyholders, and $r \in \bbn$ denote a superthreshold number of keyholders.
+
+Tuples are generally denoted with underlines, i.e.\ $\underline{x} = (x_1, \ldots, x_n)$, and we abuse set notation for these, e.g.\ $x_1 \in \underline{x}$. The set of all finite-length bitstrings is denoted with $\bitstrings$.  For $n \in \bbn$, denote the set $\left\{1, 2, \ldots, n\right\}$ with $\left[n\right]$. For sets $X, Y$ with $X \subseteq Y$, denote the set $\left\{y \in Y \mid y \notin X\right\}$ with $\overline{X}$. 
+
+Denote a prime modulus with $q \in \bbn$, an abelian group of order $q$ with $\G$, and a generator of $\G$ with $G \in \G$. We say the tuple $(q, \G, G)$ are \textit{group parameters}. Given $\underline{x} = (x_1, \ldots, x_n) \in \Zq^n$ and $\underline{G} = (G_1, \ldots, G_n) \in \G^n$, we denote the Shur product $\underline{x} \circ \underline{G} = (x_1G_1, \ldots, x_n G_n)$.
+
+
+Denote ``big-oh'' notation with $O$ and denote random oracles with $\mathcal{O}$. Denote algorithm run times with $t \geq 0$ and success probabilities with $\epsilon \in [0,1]$. Denote the event that a PPT algorithm $\mathcal{A}$ inputs some $\texttt{in}$ and outputs some $\texttt{out}$ with $\texttt{out} \leftarrow \mathcal{A}(\texttt{in})$. We use the same notation for oracles, but we refer to the inputs as queries, say $\texttt{query}$, and outputs as responses, say $\texttt{resp}$.
+
+
+\subsection{Definitions}\label{sec:definitions}
+
+
+
+\begin{definition}[$\kappa$ Random Oracle Distinguishing]\label{def:distinguisher}
+Let $\kappa \geq 0$ be an integer, let $S, T$ be sets, $\mathcal{O}:S \to T$ be a random oracle, and $\phi: S \to T$ a function. Any PPT $(t,\epsilon)$-algorithm $\mathcal{A}$ which plays the following game is an $(\phi,\kappa)$-distinguisher.
+\begin{enumerate}
+\item The challenger samples $b \sample \left\{0,1\right\}$ and grants $\mathcal{A}$ access to an oracle $\mathcal{O}^\prime_b$, where 
+\begin{enumerate}
+\item $\mathcal{O}^\prime_0$ is a simple wrapper for $\mathcal{O}$, and
+\item $\mathcal{O}^\prime_1$ is a simple wrapper for $\phi$.
+\end{enumerate}
+\item Eventually, $\mathcal{A}$ outputs a bit $b^\prime$, succeeding if and only if $b^\prime = b$ and $\mathcal{O}^\prime_b$ was queried at most $\kappa$ times.
+\end{enumerate}
+\end{definition}
+
+
+
+\begin{definition}[$\kappa$-OMDL: One-More-Than-$\kappa$ Discrete Logarithms over $G \in \G$]\label{def:omdl}
+Let $\kappa \geq 0$ be an integer. Let $ \Phi = \left\{(q_\secpar, \G_\secpar, G_\secpar)\right\}_{\secpar \in \bbn}$ be a parameterized family of group parameters. Let $t \geq 0$ and $\epsilon \in [0, 1]$ be real numbers. We say any PPT algorithm $\mathcal{A}$ that can successfully play the following game in time at most $t$ and with probability at least $\epsilon$ is a $(t,\epsilon)$-player of the one-more-than-$\kappa$ discrete logarithms game over $G_\secpar \in \G_\secpar$.
+\begin{enumerate}
+\item The challenger grants $\mathcal{A}$ access to a key generation oracle $\keyOracle:\left\{\ast\right\} \to \G_\secpar$ and a corruption oracle $\corruptionOracle: \G_\secpar \to \mathbb{Z}_{q_\secpar}$ which work as follows.
+\begin{enumerate}
+\item A valid query made to $\keyOracle$ is a simple request for a new key, which we model with a dummy singleton domain $\left\{\ast\right\}$. The response is some point $\texttt{resp}=X \in \G_\secpar$. We say the response is a \textit{challenge key}. Let $\challengeKeySet = \left\{X \in \G_\secpar \mid X \leftarrow \keyOracle\text{ occurred}\right\}$ denote the set of all responses from $\keyOracle$.
+
+\item A valid query made to $\corruptionOracle$ a challenge key, $X \in \challengeKeySet$. The response to a valid query $X$ is a scalar $x \in \mathbb{Z}_{q_\secpar}$ such that $X = xG$, and the response to an invalid query is a distinct failure symbol. Let $\corruptedKeySet \subseteq \challengeKeySet$ be the subset of valid queries made to $\corruptionOracle$ be the \textit{corrupted keys} and let $\overline{\corruptedKeySet}$ be the subset of \textit{uncorrupted challenge keys}.
+\end{enumerate}
+   \item Eventually, the event $\texttt{out}_\mathcal{A} \leftarrow \mathcal{A}$ occurs. We say $\mathcal{A}$ succeeds at the $\kappa$-OMDL game if and only if all the following hold in this event:
+\begin{enumerate}
+\item $\left|\challengeKeySet\right| \geq \kappa + 1$,
+\item $\left|\corruptedKeySet\right| \leq \kappa$,
+\item $\texttt{out}_{\mathcal{A}} \in \mathbb{Z}_{q_\secpar}^{\kappa+1}$, and
+\item $\left\{xG \mid x \in \texttt{out}_{\mathcal{A}}\right\} \subseteq \challengeKeySet$
+
+\end{enumerate}
+\end{enumerate}
+Moreover, if $t \in \polysecpar$ implies $\epsilon \in \negl$ for every $(t, \epsilon)$-player, we say the $\kappa$-OMDL game is hard over $\Phi$.
+\end{definition}
+
+In the sequel, we leave $\secpar$ implicit, suppressing it in our notation for clarity, except when there is case of confusion.
+
+Note that the $0$-OMDL game is simply the discrete logarithm game. Moreover, an adaptive variation of this game is natural, where  $\kappa$ is determined in each instance of the game by the number of corruption oracle queries made by the adversary.
+
+
+
+\begin{oracle}
+    \centering
+    \begin{suboracle}[ht]{0.2\textwidth}
+        \begin{tabular}{|l|}
+        \hline
+        \multicolumn{1}{|c|}  {\textbf{Oracle} $\keyOracle(\ast)$} \\
+        \hline 
+        $x \lsamp \Zq$ \\
+        $X=xG$ \\
+        $\challengeKeySet = \challengeKeySet \cup \left\{X\right\}$ \\
+        \textbf{return } $X$ \\
+        \hline
+        \end{tabular}
+    \end{suboracle}
+    \hspace{1em}
+    \begin{suboracle}[ht]{0.3\textwidth}
+        \begin{tabular}{|l|}
+        \hline
+        \multicolumn{1}{|c|}  {\textbf{Oracle} $\corruptionOracle(X)$} \\
+        \hline 
+        \textbf{if} $X \in \challengeKeySet$ \\ \quad \quad
+        $x=\log_G{X}$ \\ \quad \quad 
+        $\corruptedKeySet = \corruptedKeySet \cup \left\{X\right\}$ \\ \quad \quad
+        \textbf{return} $x$ \\
+        \textbf{else return} $\perp$ \\
+        \hline
+        \end{tabular}
+    \end{suboracle}
+\caption{The key generation and corruption oracles for the $\kappa$-OMDL game.}
+\label{oracle:OMDL}
+\end{oracle}
+
+\begin{game}
+    \centering
+    \begin{tabular}{|l|}
+    \hline
+    \multicolumn{1}{|c|}  {\textbf{Game} $\kappa\text{-OMDL}(\underline{x})$} \\
+    \hline 
+    \textbf{if} $\left|\challengeKeySet\right| \geq \kappa+1$  
+    \textbf{and }  $\left|\corruptedKeySet\right| \leq \kappa$ \\
+    \textbf{and} $\underline{x} \in \Zq^{\kappa+1}$ \textbf{and} $\underline{x} \circ \underline{G} \subseteq \challengeKeySet$\\
+    \quad \quad \textbf{return} $1$ \\
+    \textbf{else return} $0$ \\
+    \hline
+    \end{tabular}
+    \caption{Success condition for the $\kappa$-OMDL game.}
+    \label{game:OMDL}
+\end{game}
+
+
+
+
+
+
+\begin{definition}[General Forking Algorithm]\label{def:general_forking_algorithm}
+Let $X, Y, H$ be finite sets, $\kappa \geq 1$ an integer parameter, and let $\mathcal{A}$ be a PPT algorithm which uses a random tape $\tau \in \bitstrings$, inputs some $(x, \underline{h}) \in X \times H^\kappa$, and  outputs a pair $(i, y) \in [\kappa] \times Y$ or a distinct failure symbol. Then the algorithm specified below, $\fork_{\mathcal{A}}$, is a PPT algorithm which inputs $x \in X$, outputs $(i, y, y^\prime) \in [\kappa] \times Y^2$ or a distinct failure symbol, and is called the \textit{general forking algorithm} for $\mathcal{A}$.
+\begin{enumerate}
+\item Sample $\tau \sample \bitstrings$ for $\mathcal{A}$ to use in both executions.
+\item Sample $\underline{h}, \underline{h}^\prime \sample H^\kappa$.
+\item Compute $\texttt{out} \leftarrow \mathcal{A}(x, \underline{h}; \tau)$.
+\item If $\texttt{out}$ is a failure symbol, output a distinct failure symbol and terminate. Otherwise, $\texttt{out}$ is not failure symbol, so parse $(i, y) := \texttt{out}$.
+\item Set $\underline{h}^* = (h_1, \ldots, h_{i-1}, h^\prime_i, h^\prime_{i+1}, \ldots, h^\prime_\kappa)$.
+\item Compute $\texttt{out}^\prime \leftarrow \mathcal{A}(x, \underline{h}^*; \tau)$.
+\item If $\texttt{out}^\prime$ is a failure symbol, output a distinct failure symbol and terminate. Otherwise, $\texttt{out}$ is not a failure symbol, so parse $(i^\prime, y^\prime) := \texttt{out}^\prime$.
+\item If $i \neq i^\prime$ or $h_i = h_{i^\prime}^*$, then output a distinct failure symbol and terminate.
+\item Otherwise, output $(i, y, y^\prime)$.
+\end{enumerate}
+\end{definition}
+
+
+\begin{lemma}[General Forking Lemma]\label{lem:general_forking_lemma}
+For any finite sets $X, H$, for any algorithm $\mathcal{A}$ as in  \cref{def:general_forking_algorithm} which runs in time at most $t$ and fails with probability at most $\epsilon$, for any probability mass function $F$ over $X$, the general forking algorithm $\fork_\mathcal{A}$ has advantage satisfying the following
+\[\texttt{Adv}_{\fork_\mathcal{A}} \geq \epsilon \left(\frac{\epsilon}{\kappa} - \frac{1}{\left|H\right|}\right)\] where this probability is measured over $F$ and all randomness used in sampling.
+\end{lemma}
+
+
+\begin{definition}[LTM: Linkable Thring Multisignatures]\label{def:ltm}
+A tuple of algorithms $(\setup, \keygen, \sign, \\ \combine, \verify, \link)$ as follows.
+\begin{enumerate}
+\item $\setupIO$. Input a security parameter $\secpar \in \bbn$, and output some public parameters $\params_\secpar$, which includes the description of secret signing key shares $\mathcal{SK}$, public verification key shares $\mathcal{VK}$, total verification keys $\mathcal{TVK}$, messages $\mathcal{MSG}$, signatures challenges $\mathcal{CH}$, partial signature shares $\mathcal{PSIG}$, and signatures $\mathcal{SIG}$.
+
+\item $\keygenIO$. An interactive probabilistic algorithm executed by some \textit{capacity} of $n \geq 1$ participants called \textit{threshold keyholders}. Users share as common input the capacity $n$ and threshold $r \in n$. Output  \textit{total verification key} $\tvk \in \mathcal{TVK}$, \textit{public verification key shares} $\VK=(\vk_i)_{i=1}^{n} \in \mathcal{VK}^n$, and \textit{secret signing key shares} $\SK = (\sk_i)_{i=1}^{n} \in \mathcal{SK}^n$.
+
+
+
+\item $\signIObase$. Non-interactive probabilistic algorithm executed by a threshold keyholder. Input a message $\msg \in \mathcal{MSG}$, a tuple of $m \geq 1$ total verification keys $\ring = (\tvk_j)_{j=1}^{m} \in \mathcal{TVK}^m$ called a \textit{ring}\footnote{A better term would be \textit{anonymity tuple}, but we keep with tradition.}, some $r \geq 1$ public verification key shares $\VK = (\vk_i)_{i=1}^{r} \in \mathcal{VK}^r$ called \textit{signers' coalition key shares},  and a secret key share $\sk \in \mathcal{SK}$. Output a ring signature share $\psig \in \mathcal{PSIG}$.
+
+\item $\combineIObase$. Non-interactive deterministic algorithm executed by a user called the \textit{combiner}. Input a message $\msg \in \mathcal{MSG}$, a ring $\ring = (\tvk_j)_{j=1}^{m} \in \mathcal{TVK}^m$,  a signers' coalition of key shares $\VK = (\vk_i)_{i=1}^{r} \in \mathcal{VK}^r$,  and ring signature shares $\psigs=(\psig_i)_{i=1}^{r} \in \mathcal{PSIG}^r$. Output a ring signature $\sig \in \mathcal{SIG}$.
+
+\item $\verifyIObase$. Non-interactive deterministic algorithm executed by a user called the \textit{verifier}. Input message $\msg \in \mathcal{MSG}$, a ring  $\ring = (\tvk_j)_{j=1}^{m} \in \mathcal{TVK}^m$, and a ring signature $\sig \in \mathcal{SIG}$. Output a bit.
+
+\item $\linkIObase$. A non-interactive deterministic algorithm executed by a user called the \textit{linker}.  Input ring signatures $\sig, \sig^\prime \in \mathcal{SIG}$, and output a bit.
+\end{enumerate}
+
+\end{definition}
+
+\cref{def:ltm} extends naturally to a \textit{verifiable} scheme by allowing the verification of signature shares with the following additional algorithm.
+Adding this additional level of verifiability requires modifying \cref{def:correctness} below in the natural way.
+
+
+\begin{itemize}
+\item $\verifyshareIObase$. Non-interactive deterministic executed by a user called a \textit{share verifier}. Input message $\msg \in \mathcal{MSG}$, a ring $\ring = (\tvk_j)_{j=1}^{m} \in \mathcal{TVK}^m$, a signers' coalition of key shares $\VK=(\vk_i)_{i=1}^{r}$, and a ring signature share $\psig \in \mathcal{PSIG}$. Outputs a bit.
+\end{itemize}
+
+Any of the algorithms in \cref{def:ltm} may input or output auxiliary data $\texttt{aux}$, which we only include in notation when relevant. Following our convention for group parameter notation, we leave $\params_\secpar$ implicit in our notation, as all algorithms require it.
+
+
+
+\begin{definition}\label{def:correctness}
+Let $\Pi$ be an LTM scheme. We define correctness using the following events.
+\begin{enumerate}
+\item Let $E_1$ be the event in which some signers' coalitions of key shares $\VK^\prime, \VK^{\prime \prime} \subseteq \VK$ is used to compute ring signature shares $\psig_i^\prime$ and $\psig_i^{\prime \prime}$ semi-honestly. That is to say, the following holds.
+\begin{enumerate}
+\item For some $\msg^\prime, \msg^{\prime \prime} \in \mathcal{MSG}$,
+\item for some $n, r \in \bbn$ such that  $r \in [n]$ and some event $(\tvk, \VK,  \SK) \leftarrow \keygen\keygenIshort$ occurs, 
+\item for some $\VK^\prime, \VK^{\prime \prime}$
+such that $\VK^\prime, \VK^{\prime \prime} \subseteq \VK$, $r^\prime = \left|\VK^\prime\right|$, $r^{\prime \prime} = \left|\VK^{\prime \prime}\right|$, and  $r \leq \min\left\{r^\prime, r^{\prime \prime}\right\}$,
+\item for some $\sigma^\prime \in \mathcal{S}_n$ such that, for every $i \in [r^\prime]$, $\vk^{\prime}_i = \vk_{\sigma^\prime(i)}$ and  $\sk^\prime_i = \sk_{\sigma^\prime(i)}$,
+\item for some $\sigma^{\prime\prime} \in \mathcal{S}_n$ such that, for every $i \in [r^{\prime \prime}]$, $\vk^{\prime\prime}_i = \vk_{\sigma^{\prime\prime}(i)}$ and  $\sk^{\prime\prime}_i = \sk_{\sigma^{\prime\prime}(i)}$,
+\item for some $\ring^\prime, \ring^{\prime \prime} \subseteq \mathcal{TVK}$ such that $\tvk \in \ring^{\prime} \cap \ring^{\prime \prime}$,
+
+\item for each $i \in [r^\prime]$, $\psig_i^\prime \leftarrow \sign(\msg^\prime, \ring^\prime, \VK^\prime,  \sk^\prime_i)$, and
+\item for each $i \in [r^{\prime \prime}]$, $\psig_i^{\prime\prime} \leftarrow \sign(\msg^{\prime\prime}, \ring^{\prime \prime}, \VK^{\prime\prime},  \sk^{\prime \prime}_i)$.
+\end{enumerate}
+
+\item Let $E_1^*$ be a similar event in which some $\VK^{**} \subseteq \VK^*$ compute ring signature shares $\psig^*_i$ semi-honestly from a different $\tvk^*$, i.e.\ all the following hold.
+\begin{enumerate}
+\item For some $\msg^* \in \mathcal{MSG}$,
+\item for some $n^*, r^* \in \bbn$ such that  $r^* \in [n^*]$ and some event $(\tvk^*, \VK^*,  \SK^*) \leftarrow \keygen\keygenIshort$ occurs such that $(\tvk^*, \VK^*,  \SK^*) \neq (\tvk^\prime, \VK^\prime,  \SK^\prime)$ and $(\tvk^*, \VK^*,  \SK^*) \neq (\tvk^{\prime\prime}, \VK^{\prime\prime},  \SK^{\prime\prime})$,
+\item for some $\VK^{**}$
+such that $\VK^{**} \subseteq \VK^*$, $r^{**} = \left|\VK^*\right|$, and  $r^* \leq r^{**}$,
+\item for some $\sigma^* \in \mathcal{S}_n$ such that, for every $i \in [r^{**}]$, $\vk^*_i = \vk_{\sigma^*(i)}$ and  $\sk^*_i = \sk_{\sigma^*(i)}$,
+\item for some $\ring^* \subseteq \mathcal{TVK}$ such that $\tvk^* \in \ring^*$,
+
+\item for each $i \in [r^{**}]$, $\psig_i^{**} \leftarrow \sign(\msg^*, \ring^*, \VK^*,  \sk^*_i)$.
+\end{enumerate}
+
+
+
+
+\item Let $E_2 \subseteq E_1^* \cap E_1$ be the event that the ring signature shares $\psig_i^\prime$, $\psig_i^{\prime \prime}$, and $\psig_i^{*}$ are combined semi-honestly, i.e.\ all of the following hold.
+\begin{enumerate}
+\item $\sig^\prime \leftarrow \combine(\msg^\prime, \ring^\prime, \psigs^\prime)$,
+\item $\sig^{\prime\prime} \leftarrow \combine(\msg^{\prime\prime}, \ring^{\prime\prime},  \psigs^{\prime\prime})$,
+\item $\sig^* \leftarrow \combine(\msg^*, \ring^*, \psigs^*)$.
+\end{enumerate}
+
+\item  Let $E_3 \subseteq E_2$ be the event that the combined signatures are valid, i.e.\ all the following hold.
+\begin{enumerate}
+\item $\verify(\msg^{\prime}, \ring^{\prime}, \sig^\prime) = 1$,
+\item $\verify(\msg^{\prime\prime}, \ring^{\prime\prime}, \sig^{\prime\prime}) = 1$, and
+\item $\verify(\msg^{\prime\prime}, \ring^{\prime\prime}, \sig^{\prime\prime}) = 1$.
+\end{enumerate}
+
+\item Let $E_4 \subseteq E_3$ be the event that $\link$ is commutative, i.e.\ all the following hold.
+\begin{enumerate}
+\item $\link(\sig^\prime, \sig^{\prime \prime}) = \link(\sig^{\prime \prime}, \sig^\prime)$,
+\item $\link(\sig^\prime, \sig^*) = \link(\sig^*, \sig^\prime)$, and
+\item $\link(\sig^*, \sig^{\prime \prime}) = \link(\sig^{\prime \prime}, \sig^*)$
+\end{enumerate}
+
+\item Let $E_5 \subseteq E_2$ that $\link(\sig^\prime, \sig^{\prime \prime}) = 1$.
+
+\item Let $E_6 \subseteq E_3$ that $\link(\sig^\prime, \sig^*) =  \link(\sig^*, \sig^{\prime \prime})=0$.
+
+\end{enumerate}
+We say $\Pi$ has \textit{correct ring signature share verification} if $\mathbb{P}[E_2] = 1$, has \textit{correct ring signature verification} if $\mathbb{P}[E_4] = 1$, has \textit{commutative linking} if $\mathbb{P}[E_5]=1$, has \textit{correct positive linkability} if $\mathbb{P}\left[E_6\right]=1$, and has \textit{correct negative linkability} if $\mathbb{P}\left[E_7\right]=1$, where these probabilities are computed over all choices of $n, r, n^*, r^*, \msg^\prime, \msg^{\prime \prime}, \msg^*$, all executions of $\keygen$, all choices of $\VK^\prime, \VK^{\prime \prime}, \VK^*$, and all randomness used by all algorithms. If $\Pi$ satisfies all four notions of correctness, we simply say $\Pi$ is a \textit{correct} LTM. 
+\end{definition}
+
+
+For convenience, we present the following common setup useful for linkability and unforgebality.
+
+\begin{definition}[Common Setup with Key Generation, Corruption, and Signing Oracles]\label{def:common_setup}
+Let $\Pi$ be an LTM scheme. Let $\mathcal{A}$ be any PPT algorithm which runs in time at most $t > 0$, and successfully plays the following game with probability at least $\epsilon \in [0,1]$.
+\begin{enumerate}
+\item $\mathcal{A}$ is granted to oracles $\keyOracle$, $\corruptionOracle$, and $\signingOracle$ as follows.
+\begin{enumerate}
+
+\item $(\tvk, \VK) \leftarrow \keyOracle(n, r).$ A valid query made to $\mathcal{O}_{\texttt{key}}$ is a simple request for $r$-of-$n$ keys, which we model with the pair $(n, r)$ such that $r \in [n]$. The response to a valid query is some $\texttt{resp} = (\tvk, \VK) \in \mathcal{TVK} \times \mathcal{VK}^n$, and the response to an invalid query is a distinct failure symbol. Let $\challengeKeySet = \left\{(\tvk, \VK) \mid \exists (n, r), (\tvk, \VK) \leftarrow \keyOracle(n, r)\right\}$ denote the set of all responses from $\keyOracle$.
+
+\begin{oracle}
+    \centering
+        \begin{tabular}{|l|}
+        \hline
+        \multicolumn{1}{|c|}  {\textbf{Oracle} $\keyOracle(n,r)$} \\
+        \hline 
+        \textbf{if} $r \in [n]$ \\  
+        \quad \quad \textbf{sample} $(\tvk, \VK)$ \\
+        \quad \quad $\challengeKeySet = \challengeKeySet \cup \left\{(\tvk, \VK)\right\}$ \\
+        \quad \quad \textbf{return} $(\tvk, \VK)$ \\
+        \textbf{else return} $\perp$ \\
+        \hline
+        \end{tabular}
+\caption{The key generation oracle in the game of common setup.}
+\label{oracle:key}
+\end{oracle}
+
+\item $\sk \leftarrow \corruptionOracle(i, \tvk, \VK).$ A valid query made to $\corruptionOracle$ is some $\texttt{query}=(i, \tvk, \VK)$ where $(\tvk, \VK) \in \challengeKeySet$ is associated with some $(n, r) \in \bbn^2$ such that $r \in [n]$ and $(\tvk, \VK) \leftarrow \keyOracle(n,r)$ occurred, and $i$ is an index in $[n]$. The response to a valid query is a secret signing key $\sk_i$ corresponding to $\vk_i \in \VK$, and the response to an invalid query is a distinct failure symbol. 
+
+Upon success, we say the verification key share $\vk_i$ has been corrupted, and if $r$ or more key shares have been corrupted associated with $\tvk$, then we say $\tvk$ has been totally corrupted. Let $\corruptedKeyShareSet = \left\{\vk_i \mid \sk_i \leftarrow \corruptionOracle(i, \tvk, \VK)\text{ occurred}\right\}$ be the set of corrupted key shares and let $\corruptedTotalKeys$ be the set of totally corrupted keys.
+
+
+
+\begin{oracle}
+    \centering
+        \begin{tabular}{|l|}
+        \hline
+        \multicolumn{1}{|c|}  {\textbf{Oracle} $\corruptionOracle(i, \tvk, \VK)$} \\
+        \hline 
+        \textbf{if} $(\tvk, \VK) \lar \keyOracle(n,r)$\textbf{ and }$i \in [n]$\textbf{ then } \\ 
+        \quad \quad $\corruptedKeyShareSet = \corruptedKeyShareSet \cup \left\{\vk_i\right\}$ \\ 
+        \quad \quad \textbf{if} $|\VK \cap \corruptedKeyShareSet| \geq r$  
+        \textbf{then}\\
+        \quad \quad \quad \quad $\corruptedTotalKeys \lar \corruptedTotalKeys \cup \left\{\tvk\right\}$ \\
+        \quad \quad \textbf{return} $\sk_i$ \\
+        \textbf{else return} $\perp$ \\
+        
+        \hline
+        \end{tabular}
+\caption{The corruption oracle in the game of common setup.}
+\label{oracle:corrupt}
+\end{oracle}
+
+
+
+
+\item $\sig \leftarrow \signingOracle(\msg, \ring, \tvk, \VK, i).$ A valid query to $\signingOracle$ is a tuple $(\msg, \ring, \tvk, \VK, i)$, where $\msg \in \bitstrings$, $\ring \in \mathcal{TVK}^m$ for some $m \in \bbn$, $\tvk \in \mathcal{TVK}$, $\VK \in \VK^r$ for some $r \in \bbn$, and $i \in \bbn$, such that all the following hold.
+\begin{enumerate}
+\item $\tvk \in \ring$,
+\item there exists some $n$, $\VK^\prime$ such that $r \in [n]$ and $(\tvk, \VK^\prime) \leftarrow \keyOracle(n,r)$ occurred,
+\item the query $\VK$ is a subset $\VK \subseteq \VK^\prime$ such that $\left|\VK\right| \geq r$, and
+\item $i \in [r]$.
+\end{enumerate}
+
+\begin{oracle}
+    \centering
+        \begin{tabular}{|l|}
+        \hline
+        \multicolumn{1}{|c|}  {\textbf{Oracle} $\signingOracle(\msg, \ring, \tvk, \VK, i)$} \\
+        \hline 
+        \textbf{parse} $r:=\texttt{len}(\VK)$ \\
+        \textbf{if} $\tvk \in \ring$ \\ 
+        \textbf{and} $\exists n,r^\prime,\VK^\prime$ s.t. $(\tvk, \VK^\prime) \leftarrow \keyOracle(n,r^\prime)$ \\ 
+        \textbf{and} $\VK \subseteq \VK^\prime$ \textbf{and} $r \geq r^\prime$ \textbf{ and } $i \in [r]$ \\
+        \quad \quad \textbf{return} $\psig$ \\
+        \textbf{else} $\perp$ \\
+        \hline
+        \end{tabular}
+\caption{The signing oracle}
+\label{oracle:sign}
+\end{oracle}
+
+The response to an invalid query is a distinct failure symbol, and the response to a valid query is a valid partial signature $\psig$ which is combinable with other valid signatures, and links to a challenge key, as follows.
+\begin{itemize}
+\item \textbf{Well-Formed Queries Combine to Valid Signatures.} 
+If oracle response events
+$\psig_{\vk^*} \leftarrow \signingOracle(\msg, \ring, \tvk, \VK, \vk^*)$ occur for each  $\vk^* \in \VK$, the combination of these responses
+$\sig = \combine(\msg, \ring, \VK, \PSIG)$ is valid, $\verify(\msg, \ring, \sig)=1$. 
+
+\item \textbf{Links to Challenge Key.}
+If $\msg^\prime$ is a message, $\VK^{\prime \prime} \subseteq \VK^\prime$ such that $\left|\VK^{\prime \prime}\right| \geq r$, $\ring^\prime$ is a ring with $\tvk \in \ring \cap \ring^\prime$, and there exist signing oracle responses for each $\vk^{**} \in \VK^{\prime \prime}$, $\psig^\prime_{\vk^{**}} \leftarrow \signingOracle(\msg^\prime, \ring^\prime, \tvk, \VK^{\prime \prime}, \vk^{**})$, then $\link(\params_\secpar, \sig, \sig^\prime)=1$ where $\sig^\prime = \combine(\msg^\prime, \ring^\prime, \VK^{\prime \prime}, \PSIG^\prime)$ is the combined signature.
+\item \textbf{Verifiability.} If $\Pi$ is verifiable, then $\verifyshare(\msg, \ring, \VK, \psig)=1$
+\end{itemize}
+
+
+
+\end{enumerate}
+\item Eventually, $\mathcal{A}$ outputs some $\texttt{out}_\mathcal{A}$ which includes one or more message-ring-signature triples $(\msg, \ring, \sig)$ such that all the signatures are valid (in which case we say $\mathcal{A}$ succeeds) or a distinct failure symbol (in which case we say $\mathcal{A}$ fails).
+\end{enumerate}
+
+Further assume that, if $\mathcal{A}$ requires more oracle queries allowed than the following bounds, or if $\mathcal{A}$ is about to make an oracle query which will cause the oracle to fail, then $\mathcal{A}$ outputs a distinct failure symbol and terminates.
+\begin{enumerate}
+\item There exists $\kappa_{\texttt{key}}$, $\kappa_{\texttt{corrupt}}$, $\kappa_{\sign} \geq 0$ such that, in every successful transcript, $\mathcal{A}$ makes at most $\kappa_{\texttt{key}}$ respective queries to $\keyOracle$, at most $\kappa_{\texttt{corrupt}}$ queries to $\corruptionOracle$, and at most $\kappa_{\sign}$ queries to $\signingOracle$. 
+
+\item For each random oracle, say $H$, to which $\mathcal{A}$ has access, there exists as similar integer $\kappa_{H}$ such that $\mathcal{A}$ makes at most $\kappa_{H}$ queries to the corresponding random oracle $H$ in every successful transcript. 
+
+\item There exists an integer $n_{\texttt{key}}$ such that all queries $\texttt{query} = (n, r)$ made to $\keyOracle$ satisfies $n \leq n_{\texttt{key}}$ in every successful transcript.
+
+
+\end{enumerate}
+
+If $\mathcal{A}$ succeeds with probability at least $\epsilon \in [0,1]$ is $(t,\epsilon)$-\textit{player of the game with common setup} with key generation oracle access, corruption oracle access, and signing oracle access. 
+
+\end{definition}
+
+Winning this game is trivial, so the notion of security against players of this game is vacuous. However, players of our unforgeability and linkability games in \cref{def:suf} and \cref{def:linkable} are also players of the game of common setup, just with nontrivial success conditions.
+
+
+\begin{definition}[LTM-SUF-1: Strong Unforgeability]\label{def:suf}
+Let $\Pi$ be an LTM scheme. Let $\mathcal{A}$ be any $(t,\epsilon)$-player of the game with common setup with key generation, corruption, and signing oracle access such that every successful output of $\mathcal{A}$ has some $(\msg, \ring, \sig) \in \texttt{out}_{\mathcal{A}}$ satisfying all the following.
+\begin{enumerate}
+\item The signature is valid, $\verify(\msg, \ring, \sig)=1$.
+
+\item All ring members are challenge keys, $\ring \subseteq \challengeKeySet$.
+
+\item If all the following hold, then $\link(\sig, \sig^\prime) = 1$:
+\begin{enumerate}
+\item there exists some
+$(j, \tvk_j) \in [m] \times \ring$, 
+capacity  $n \in \bbn$, and a 
+threshold $r \in [n]$ such that
+a key generation oracle query event $(\tvk_j, \VK) \leftarrow \keyOracle(n,r)$ occurs,
+\item there exists some $\msg^\prime \in \bitstrings$, some $\ring^\prime \in \mathcal{P}(\mathcal{TVK})$ such that $\tvk_j \in \ring \cap \ring^\prime \setminus \corruptedTotalKeys$,  some signers' coalition of public verification keys $\VK^\prime \subseteq \VK$ such that $\left|\VK^\prime\right| \geq r$,  and events $\psig_{\vk^\prime} \leftarrow \signingOracle(\msg^\prime, \ring^\prime, \tvk_j, \VK^\prime, \vk^\prime)$ for each $\vk^\prime \in \VK^\prime$ which occurred, and
+\item $\sig^\prime = \combine(\msg^\prime,\ring^\prime,\VK^\prime,\PSIG)$.
+\end{enumerate}
+
+
+\item For any $\msg^\prime$, for any $\ring^\prime$, for any $\VK^\prime$, if every event $(\psig_i \leftarrow \signingOracle(\msg^\prime, \ring^\prime, \VK^\prime, \vk_i)$ occurs for each  $\vk_i \in \VK$, then $\sig \neq \combine(\msg^\prime, \ring^\prime, \VK^\prime, \PSIG^\prime)$.
+\end{enumerate}
+Then we say $\mathcal{A}$ is an \textit{LTM strong forger} for $\Pi$. Moreover, if  $t \in \polysecpar$ implies $\epsilon \in \negl$ for every LTM strong forger, then we say $\Pi$ is \textit{strongly unforgeable}.
+\end{definition}
+
+We connect this definition to the definition of strong unforgeability for threshold digital signature schemes, TS-SUF-4 from \cite{bellare2022better}. Indeed, we include as ``trivial'' all ring signatures which are a superthreshold combinations of oracle-generated signature shares which all use a common query. This way, if an attacker can combine seemingly unrelated ring signature shares to obtain a valid signature, we count this as a forgery. 
+
+However, ring signatures have their own hierarchy of security definitions, and some of these depend on how many adversarially-selected ring members are allowable in a forgery. We call the previous definition LTM-SUF-1, because an unforgeable scheme under this definition stops forgers from generating ostensibly valid signatures, but only when all ring members are challenge keys. Natural extensions may be a fruitful area of further research.
+
+
+The following is, as far as the authors are aware, a novel definition of linkability for ring signatures.
+
+\begin{definition}[$\kappa$-Linkability]\label{def:linkable}
+Let $\Pi$ be a LTM signature scheme and $\mathcal{A}$ be a $(t,\epsilon)$-player of the game of common setup with key generation, corruption, and signing oracle access such that every successful output of $\mathcal{A}$ has some $\left\{(\msg_u, \ring_u, \sig_u)\right\}_{u\in[\kappa+1]}$ satisfying all the following properties.
+\begin{enumerate}
+\item For each $u \in [\kappa+1]$, $\verify(\msg_u, \ring_u, \sig_u) = 1$.
+
+
+\item For each $u, v \in [\kappa+1]$, $\link(\sig_u, \sig_v) = \delta_{u,v}$, the Kronecker delta function.
+\item At most $\kappa$ keys can be under adversarial control, $\left|\cup_u \ring_u \setminus \overline{\corruptedTotalKeys}\right| \leq \kappa$
+\end{enumerate}
+Then we say $\mathcal{A}$ is a \textit{$\kappa$-linkability breaker} for $\Pi$. Moreover, $t \in \polysecpar$ implies $\epsilon \in \negl$ for every $\kappa$-linkability breaker, we say $\Pi$ is $\kappa$-\textit{linkable.}
+\end{definition}
+
+Note that if we remove oracle access from \cref{def:linkable}, we recover the notion of pigeonhole linkability. On the other hand, if we retain oracle access but set $\kappa = 1$, we recover the notion of ACST linkability.
+
+
+\section{FROSTLASS Construction}
+
+We now provide a formal description of FROSTLASS. We note that the definition provided here varies from the Rust implementation at \cite{SeraiRepo} in several ways to improve readability, in a few security-neutral ways. We discuss these in \cref{sec:variations_from_implem}.
+
+\begin{definition} \label{def:frostlass}
+Let $F_{\texttt{PRNG}}$ be a seedable pseudorandom number generator. FROSTLASS consists of the following algorithms. 
+\begin{enumerate}
+\item $\setup(\secpar) \to (q,\G, G, d, \underline{H})$ where $q \geq 1$ is a prime modulus, $\G$ is an abelian group of order $q$, $G \in \G$ is a generator, $d \in \bbn$ is a key dimension, and $\underline{H}$ are the following random oracles.
+\begin{enumerate}
+\item $H_{\texttt{base}}:\bitstrings \to \G$,
+\item $H_{\seed}:\bitstrings \to \left\{0,1\right\}^\secpar$,
+\item $H_{\FROST,i}:\bitstrings \to \Zq$ for each $i \in \mathbb{N}$,
+\item $H_{\lt}^*:\bitstrings \to \Zq$.
+\item $H_{\lt,k}:\bitstrings \to \Zq$ for each $1 \leq k \leq d-1$,
+\item $H_{\texttt{ch}}:\bitstrings \to \Zq$.
+\end{enumerate}
+\item $\keygen(n, r, \underline{z}) \to (\tvk, \VK, \LT, \SK)$. 
+An interactive PPT algorithm which requires $n \geq 2$ participants.  Participants decide upon  a threshold $1 \leq r \leq n$, and scalars $\underline{z} = z_1, \ldots, z_{d-1} \in \Zq$ via secure side channel; they share these data as common input.  Participants do the following. 
+\begin{enumerate}
+\item Participants use FROST key generation such that, for each $1 \leq i \leq n$, the $i^{th}$ participant obtains the total verification FROST key $Y$, secret signing key share\footnote{The secret share $y_i$ is denoted $s_i$ in the original FROST paper; however, we use $s_i$ for signature data to maintain consistency with previous ring signature publications.}  $y_i$, and public verification key share $Y_i$.
+\item For each $i \in [n]$, the $i^{th}$ participant computes $Z_k = z_k G$ for each $k \in [d-1]$. These are called the \textit{auxilliary keys}.
+\item Compute the \textit{main linking tag share} $\mathfrak{T}_i = y_i H_{\texttt{base}}(Y)$ and the \textit{auxilliary linking tags} $\mathfrak{D}_k = z_k \cdot H_{\texttt{base}}(Y)$ for $k \in [d-1]$.
+\item Set the following.
+\begin{align*}
+\sk_i &= (y_i, z_1, \ldots, z_{d-1}), \\
+\vk_i &= (Y_i, Z_1, \ldots, Z_{d-1}), \\
+\tvk &= (Y, Z_1, \ldots, Z_{d-1}),\text{ and}\\
+\lt_i &= (\mathfrak{T}_i, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})
+\end{align*}
+The key $Y \in \tvk$ is called the \textit{linking key}. 
+\end{enumerate}
+At the end of this process, each participant has learned their total verification key $\tvk$ for the group, secret key shares $\sk_i$, public key shares $\vk_i$, and linking tag share $(\tvk, \vk_i, \lt_i, \sk_i)$. We call these participants \textit{signers}.
+
+
+\item $\sign(\msg, \ring, \VK,  \sk, (\tlt, \texttt{com}, d, e)) \to \psig$. 
+A non-interactive PPT algorithm individually carried out by signers. Signers are expected to interactively decide upon a message $\msg$, a ring $\ring$, a signers' coalition of public verification key shares $\VK^\prime$, a total linking tag $\tlt$, and a hash table $\texttt{com}$ by secure side channel with authentication in a pre-processing step before executing $\sign$; see $\preproc$ below in \cref{sec:extensions}. Input a message $\msg$, a ring $\ring = (\tvk_1, \ldots, \tvk_m)$, a signers' coalition of public verification key shares $\VK^\prime = (\vk_i^\prime)_{i=1}^{r}$, a secret key $\sk$, and auxiliary data $(\tlt, \texttt{com}, d, e)$, where $\tlt$ is a total linking tag, $\com = \left\{(\vk_i, (D_i, E_i, D_i^\prime, E_i^\prime))\right\}_{i=1}^{r}$ is a hash table with keys $\vk_i \in \VK$ and values which are quadruples $(D_i, E_i, D^\prime_i, E^\prime_i) \in \G^4$, and $d, e \in \Zq$ are secret scalars.
+
+The signer does the following.
+\begin{enumerate}
+\item  Find the index $j^* \in [m]$ such that the ring member $\tvk_{j^*} \in \ring$ is the total verification key. If no such index exists, output a distinct failure symbol and terminate.
+\item Find the index $i^* \in [r]$ such that $\sk$ corresponds to $\vk_{i^*} \in \VK$. If no such index exists, output a distinct failure symbol and terminate.
+\item Parse:
+\begin{enumerate}
+\item $(y_{i^*}, z_1, \ldots, z_{d-1}) := \sk$, 
+\item $(Y_i, Z_{i,1}, \ldots, Z_{i,d-1}) := \vk_i$ for $i \in [r]$,
+\item $\left\{(\vk_i, (D_i, E_i, D_i^\prime, E_i^\prime))\right\}_{i=1}^{r} := \texttt{com}$, 
+\item $(Y^\prime_j, Z_{j,1}^\prime, \ldots, Z_{j,d-1}^\prime) := \tvk_j$ for $j \in [m]$, and
+\item $(\mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1}) := \tlt$.
+\end{enumerate}
+
+\item If there exists any $j \in [m]$, $k \in [d-1]$ such that $Z_{j,k} \neq Z^\prime_{j,k}$, output $\bot$ and terminate.
+
+
+\item Compute:
+\begin{enumerate}
+\item the point hash $\widehat{Y}_{j^*} = H_{\texttt{base}}(Y_{j^*})$.
+\item a seed\footnote{A functionally equivalent implementation uses an extendable output function $\texttt{xof}$ to extract $\underline{s}$ directly, bringing efficiency gains and reducing the risk of implementation errors.} $\gamma \leftarrow H_{\seed}(\VK \mid \mid \widehat{Y}_{j^*} \mid \mid \ring \mid \mid \tlt \mid \mid \msg \mid \mid \texttt{com})$, 
+\item the Lagrange coefficients $\lambda_i = \prod_{i^\prime \neq i} \frac{i}{i^\prime-i} (\text{mod }q)$ for each $i \in [r] = \left\{1,2,\ldots,r\right\}$.
+\item FROST coefficients for $i \in [r]$, $\rho_i = H_{\FROST,i}(\msg \mid \mid \widehat{Y}_{j^*} \mid \mid \ring \mid \mid \VK \mid \mid \LT \mid \mid \com)$,
+
+
+
+\item FROST nonces $F_i = D_i + \rho_i E_i$ for $i \in [r]$,
+\item FROST-like nonces $F^\prime_i = D^\prime_i + \rho_i E^\prime_i$ for $i \in [r]$,
+
+\item starting nonces $L_{j^*} = \sum_{i=1}^{r} F_i$ and $R_{j^*} = \sum_{i=1}^{r} F^\prime_i$, and
+\item starting signature challenge \[c_{j^*+1} = H_{\texttt{ch}}\signaturequerystar\] where we identify $c_{m+1} \equiv c_1$ in the case that $j^* = m$.
+
+
+\end{enumerate}
+
+\item Sample $(s_j)_{j \neq j^*} \leftarrow F_{\texttt{PRNG}}(\gamma)$.
+
+
+\item\label{step:commonstuff} Compute:
+\begin{enumerate}
+
+\item the point hashes of ring members' leading keys $\widehat{Y}_j = H_{\texttt{base}}(Y_j^\prime)$.
+
+\item the aggregation coefficients
+
+\begin{align*}
+\mu_{Y} =& H_{\lt}^*(\ring  \mid \mid \tlt \mid \mid \underline{\widehat{Y}}), \text{ and} \\
+\mu_{k} =& H_{\lt,k}(\ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}})\text{ for each }k \in [d-1],
+\end{align*}
+
+
+
+
+
+
+\item the aggregated linking tag
+$\mathfrak{W} = \mu_{Y} \mathfrak{T} + \sum_{k=1}^{d-1} \mu_{k} \mathfrak{D}_k$,
+
+
+
+\item for each $j \in [m]$, the $j^{th}$ aggregated ring member $W_j = \mu_Y Y_j^\prime + \sum_{k=1}^{d-1} \mu_k Z_{j,k}^\prime$,
+
+
+
+
+\item For $j^* < j \leq m$, compute the nonces and signature challenges:
+\begin{align*}
+L_j =& s_j G + c_j W_j \\ R_j =& s_j \widehat{Y}_j + c_j \mathfrak{W} \\
+c_{j+1} =& H_{\texttt{ch}}\signaturequery % LINE 269 IN KAYABA'S RINGCT CODE
+\end{align*}
+
+\item Set $c_1 = c_{m+1}$ and, for $1 \leq j < j^*$, compute the nonces and signature challenges as in the previous step.
+
+\end{enumerate}
+
+\item Set $s_{j^*, i^*} = d + \rho_{i^*} e + \lambda_{i^*} \cdot c_{j^*} \cdot w_{i^*}$.
+
+\item Output $\psig = (i^*, \lt_{i^*}, c_1, s_1, \ldots, s_{j^*-1}, s_{j^*, i^*}, s_{j^*+1}, \ldots s_m)$.
+\end{enumerate}
+
+\item $\combine(\msg, \ring, \psigs) \to \sig$. Input a message $\msg$, a ring $\ring$, and signature shares $\psig_1, \ldots, \psig_r$, and output a ring signature $\sig$. Do the following.
+\begin{enumerate}
+\item Parse $(\vk_1, \ldots, \vk_r) := \VK$, $(Y_i, Z_{i,1}, \ldots, Z_{i,d-1}) := \vk_i$ for $i \in [r]$, and $Y := \tvk$. Parse $(\tvk_1, \ldots, \tvk_m) := \ring$ and find the index $1 \leq j^* \leq m$ in $\ring$ such that $Y  \tvk_{j^*}$. Otherwise, output a distinct failure symbol and terminate.
+
+\item Parse each $(i^\prime_i, \lt_i, c_{i,1}, (s_{i,j})_{j=1}^{m}) := \psig_i$ for each $i \in [r]$. 
+
+\item If there exists indices $i_1 \neq i_2$ such that $\lt_{i_1} = \lt_{i_2}$, output a distinct failure symbol and terminate. 
+
+\item Otherwise, if there exists indices $i_1 \neq i_2$ any signature challenges mismatch, $c_{i_1,1} \neq c_{i_2, 1}$, output a distinct failure symbol and terminate.
+
+\item Otherwise, for any $1 \leq i_1, i_2 \leq r$, $1 \leq j \leq m$, if $j \neq j^*$ and $s_{i_1,j} \neq s_{i_2, j}$, output a distinct failure symbol and terminate.
+
+\item Otherwise, set $c_1 = c_{1,1}$, set $\widehat{s}_j = s_j$ for each $j \neq j^*$, set $\widehat{s}_{j^*} = \sum_{i=1}^{r} s_{i,j^*}$, and output the signature $\sig = (c_1, (\widehat{s})_{j=1}^{m}, \tlt)$
+\end{enumerate}
+
+\item $\verify(\msg, \ring, \sig) \to b$. Input a message $\msg$, a ring $\ring = (\tvk_1, \ldots, \tvk_m)$, and a signature $\sig$. Output a bit. Works as follows.
+\begin{enumerate}
+\item Parse $(c_1, s_1, \ldots, s_m, \mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1}) := \sig$. 
+\item If $\mathfrak{T} = 0$ or any $\mathfrak{D}_{d-1} = 0$, output $0$ and terminate.
+\item Using $j^* = 1$, execute step \cref{step:commonstuff} in $\sign$.
+\item If $c_1 = c_{m+1}$, output $1$ and terminate; otherwise output $0$ and terminate.
+\end{enumerate}
+
+
+\item $\link(\sig, \sig^\prime) \to b$. Do the following.
+\begin{enumerate}
+\item Parse the following.
+\begin{enumerate}
+\item $(c_1, s_1, \ldots, s_m, \tlt) := \sig$, $(c_1^\prime, s_1^\prime, \ldots, s_m^\prime, \tlt^\prime) := \sig^\prime$,
+\item $(\mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1}) := \lt$,  $(\mathfrak{T}^\prime, \mathfrak{D}_1^\prime, \ldots, \mathfrak{D}_{d-1}^\prime) := \lt^\prime$. 
+\end{enumerate}
+\item Output a bit indicating whether $\mathfrak{T} = \mathfrak{T}^\prime$.
+\end{enumerate} 
+
+
+\end{enumerate}
+\end{definition}
+
+Beware that signature shares leak information, like the true signer's ring index. Executing $\verifyshare$ or $\combine$ can only be safely done with other signers.
+
+
+\subsection{Extensions and Additional Algorithms}\label{sec:extensions}
+
+
+
+FROSTLASS (\cref{def:frostlass}) can be made verifiable as described in \cref{sec:definitions} with a $\verifyshare$ algorithm as follows.
+
+\begin{itemize}
+\item $\verifyshare(\msg, \ring, \VK, \psig, \tlt, \texttt{com}) \to b$ inputs some $\msg$,  $\ring = (\tvk_1, \ldots, \tvk_m)$,
+signers' coalition of key shares $\VK = (\vk_i)_{i=1}^{r}$, a signature share $\psig=(i^*, \lt, c_1, s_1, \ldots, s_m)$, a total linking tag $\tlt$, and a hash table $\texttt{com}$, and outputs a bit. Do the following.
+\begin{enumerate}
+\item Set $j^* = 1$.
+\item Carry out step c of $\sign$.
+\item Parse $(i^*, \lt, c_1, s_1, \ldots, s_m) := \psig$.
+\item Carry out step d of $\sign$.
+\item Carry out step e of $\sign$. If any $s_j$ mismatch their corresponding element in $\psig$, output $0$ and terminate.
+\item Carry out step f of $\sign$, to obtain each $c_j^\prime$.
+\item If $c_1 \neq c_1^\prime$, or $s_{j^*, i^*}G \neq \lambda_{i^*} c_{i^*} Y_{i^*}$, or $s_{j^*, i^*}\widehat{Y}_{j^*} \neq \lambda_{i^*}c_{j^*} \mathfrak{W}$, output $0$ and terminate.
+\item Otherwise, output $1$ and terminate.
+\end{enumerate}
+\end{itemize}
+
+
+FROSTLASS also admits a pre-processing step wherein participants may commit to their auxiliary signing data ahead of time and compute their total linking tag $\tlt$, which works as follows.
+
+\begin{itemize}
+\item $\preproc(\tvk, \VK, \SK) \to (\lt,  \texttt{com})$. An interactive PPT algorithm required to execute $\sign$ and $\verifyshare$, and which requires some $r \geq 1$ participants and a digital signature scheme $\Pi_{DSS}$ as a subroutine. Input total verification key $\tvk$, signers' coalition of public verification key shares $\VK = (\vk_i)_{i=1}^{r}$, and secret signing key shares $\SK = (\sk_i)_{i=1}^{r}$. Output a hash table $\texttt{com}$. 
+ Participants do the following. 
+\begin{enumerate}
+\item Parse $(\mathfrak{T}_i, \underline{\mathfrak{D}}^{(i)}) := \lt_i$. If any $\underline{\mathfrak{D}}^{(i)} \neq \underline{\mathfrak{D}}^{(i^\prime)}$, output $\bot$ and terminate. 
+\item Otherwise, carry out step d.ii and d.iii from $\sign$ to compute the Lagrange coefficients $\lambda_i$ and the linking tag $\mathfrak{T} = \sum_i \mathfrak{T}_i$.
+\item Compute the point hash of the linking key $\widehat{Y} = H_{\texttt{base}}(Y)$.
+\item For each $i \in [r]$, the $i^{th}$ participant samples $(d_i, e_i) \in \Zq^2$ and computes the following:
+\begin{align*}
+D_i &= d_i G, & D_i^\prime &= d_i \widehat{Y}, \\
+E_i &= e_i G,\text{ and} &
+E_i^\prime &= e_i \widehat{Y}.
+\end{align*}
+\item The $i^{th}$ participant sends $(\lt_i, D_i, E_i, D^\prime_i, E^\prime_i)$ in an authenticated all-to-all broadcast to the other signers\footnote{Equivalently, all users may send their commitment points to a single member, who may then broadcast $\texttt{com}$ back to all other users after executing step 3 of \texttt{PreProc}}.
+
+\item After using $\Pi_{DSS}$ to verify this communication, participants set $\texttt{com}$ to be a hash table with keys $\vk_i$ and values $\texttt{com}[\vk_i] = (D_i, E_i, D^\prime_i, E^\prime_i)$.
+\end{enumerate}
+\end{itemize}
+
+
+FROSTLASS also only links ring signatures according to whether the linking tags $\mathfrak{T}$ match, where $\mathfrak{T}$ is a collision-resistant image of the link of the signing key. That is, linking is not bound to the message, the other keys $Z_k$ of the signing key, or the ring. Variations of this scheme binding linking to more data can provide a hierarchical expansion of linkability; this may be a fruitful area of further research.
+
+
+\subsection{Concrete Instantiation}\label{sec:concrete_instantiation}
+
+
+To concretely implement random oracles in practice, we employ hash functions $H_{\G}: \bitstrings \to \G$, $H_{\Zq}:\bitstrings \to \Zq$, and $H_{\secpar}:\bitstrings \to \left\{0,1\right\}^\secpar$ with distinct domain separating tags $\dst_{\texttt{label}} \in \bitstrings$. For example, we concretely instantiate $H_{\texttt{base}}$ by mapping $x \mapsto H_{\G}(\dst_{\texttt{base}} \mid \mid x)$. Note that we can avoid domain separating tags and associated implementation errors without losing efficiency by using an extendable output function $\texttt{xof}$ instead of hash functions throughout, extracting $(\mu_Y, \mu_1, \ldots, \mu_{d-1}) \leftarrow \texttt{xof}(\vk_{j^*})$ directly with one function call.
+
+\subsection{Variations From Older Versions of CLSAG and the Rust Implementation}\label{sec:variations_from_implem}
+
+The scheme \cref{def:frostlass} varies from both older versions of CLSAG and the Rust implementation at \cite{SeraiRepo} in a few ways.
+
+\begin{itemize}
+\item We try to strictly follow the ``hash the complete transcript'' paradigm to prevent malleability in \cref{def:frostlass}. This causes some significant variations from previous versions of CLSAG and the Rust implementation; much more data is included in our hash pre-images.
+\begin{itemize} 
+\item For example, we include the point hashes of the ring members $\underline{\widehat{Y}}$ when computing aggregation coefficients in g.ii of $\sign$. This prevents an adversary from attempting to pick some aggregation coefficients before selecting a ring. 
+\item Similarly, we also include the aggregated key image $\mathfrak{W}$ in the preimage of every signature challenge computation. This prevents an adversary from attempting to pick a signature challenge before deciding upon an aggregated key image. 
+\end{itemize}
+This binding prevents malleability. We see no obvious way to violate any of our security properties without taking such care, but we do so as a matter of good practice for the formal definition of the scheme. Practical implementations do not need to be quite so stringent. For example, although CLSAG signatures do not usually compute $c_{j+1}$ with the total linking tag $\tlt$ included in the pre-image, the most notable application of CLSAG signatures (the Monero cryptocurrency) includes these data in the message being signed. By including these data in $\msg$, those applications essentially enforce (some of) the ``include all data in all hashes'' paradigm.
+
+\item The order of our computations in \cref{def:frostlass} is not necessarily faithful to the order of computations in \cite{SeraiRepo}.  Our description in \cref{def:frostlass} is ordered in a way which makes cross-referencing within this document easier, improving the readability of our description of $\verify$ and $\verifyshare$ substantially. None of our variations from \cite{SeraiRepo} cause security problems and are rather superficial.
+
+\item All hashing in \cite{SeraiRepo} is deterministically computed from transcript data. The approach in this repo largely follows the ``hash the complete transcript'' paradigm. Indeed, the Rust implementation appends data to running transcripts constructed in a canonical way.  However, this transcript is pruned whenever data can be deterministically and verifiably computed from the state of the transcript at some point. For example, computing $x = H(\msg)$, $y = H(0 \mid \mid x)$, and $z = H(1 \mid \mid x)$ is safe; we do not need to compute $z = H(1 \mid \mid y \mid \mid x)$. This approach is consistent with, e.g.\ approaches in IETF standards like RFC 9591.
+
+
+\end{itemize}
+
+
+
+
+The same can be said of all other hashes and randomness; this enforces a degree of semi-honesty among users of this Rust implementation.
+
+
+
+\section{FROSTLASS Security}
+
+
+Correctness and linkability depend on the following lemmata, wherein we intentionally conflate linking tags $\mathfrak{T}$ with a function mapping a linking key to its linking tag. Recalling $H_{\G}$ was a hash function modeled as a random oracle (see \cref{sec:concrete_instantiation}), this lemma establishes that, as a corollary, $\mathfrak{T}$ is indistinguishable from a random oracle.
+
+
+\begin{lemma}\label{lem:link_tags_are_oracles}
+Let  $\dst \in \bitstrings$ be a domain separating tag, let $\theta:\G \to \G$ be any function, let $\phi: \Zq \times \G \to \G$ be the function defined by mapping $(x, Y) \mapsto x \cdot \theta(Y)$, and let $t_{\texttt{scmul}}$ denote the time it takes to multiply a point in $\G$ by a scalar in $\Zq$. If some PPT $(t,\epsilon)$ algorithm $\mathcal{A}$ (or $\mathcal{B}$, respectively) is a $\kappa$-distinguisher for $\phi$ (or $\theta$, respectively) under definition \cref{def:distinguisher}, then there exists a PPT $(t^\prime, \epsilon^\prime)$ algorithm $\mathcal{A}^\prime$ (or $\mathcal{B}^\prime$, respectively) which is a $\kappa$-distinguisher for $\theta$ (or $\phi$, respectively).
+\end{lemma}
+\begin{proof}
+Assume the algorithm $\mathcal{A}$ can distinguish $\phi$ from a random oracle in \cref{def:distinguisher}. We build a $\mathcal{A}^\prime$ to distinguish $\theta$ as follows.
+\begin{enumerate}
+\item $\mathcal{A}^\prime$ is granted oracle access to $\mathcal{O}^\prime_b:\G \to \G$.
+\item $\mathcal{A}^\prime$ runs $\mathcal{A}$ as a subroutine, handling oracle queries as follows. When $\mathcal{A}$ sends some query $(x, Y) \in \Zq \times \G$, $\mathcal{A}^\prime$ computes $Y^\prime \leftarrow \mathcal{O}^\prime_b(Y)$, sets $Z = xY^\prime$, and responds with $Z$.
+\item When $\mathcal{A}$ outputs $b^\prime$, $\mathcal{A}^\prime$ outputs $b^\prime$.
+\end{enumerate}
+It is clear that this $\mathcal{A}^\prime$ correctly plays the $\kappa$-random oracle distinguisher game for $\theta$, succeeds if and only if $\mathcal{A}$ succeeds at distinguishing $\phi$, and takes only the additional time to compute $xY^\prime$ from $x$ and $Y^\prime$, i.e.\ a single scalar multiplication.
+
+Likewise, assume $\mathcal{B}$ can distinguish $\theta$ from a random oracle. We build $\mathcal{B}^\prime$ similarly.
+\begin{enumerate}
+\item $\mathcal{B}^\prime$ is granted oracle access to $\mathcal{O}^\prime_b:\Zq \times \G \to \G$.
+\item $\mathcal{B}^\prime$ runs $\mathcal{B}$ as a subroutine, handling oracle queries as follows. When $\mathcal{B}$ sends some query $Y \in \G$, $\mathcal{B}^\prime$ samples $x \sample \Zq$, computes $Y^\prime \leftarrow \mathcal{O}^\prime_b(x, Y)$, sets $Z = x^{-1}Y^\prime$, and responds with $Z$.
+\item When $\mathcal{B}$ outputs $b^\prime$, $\mathcal{B}^\prime$ outputs $b^\prime$.
+\end{enumerate}
+It is also clear that this $\mathcal{B}^\prime$ correctly plays the $\kappa$-random oracle distinguisher game for $\phi$, succeeds if and only if $\mathcal{B}$ succeeds at distinguishing $\theta$, and takes additional time for sampling, inverting an element from $\Zq$, and multiplying a point by a scalar, i.e. extra time $t_{\texttt{sample}} + t_{\texttt{inv}} + t_{\texttt{scmul}}$.
+\end{proof}
+
+
+\begin{cor}\label{cor:key_images_are_random_oracles}
+Let $r \geq 1$. Each of the maps $\mathfrak{T}:\Zq \to \G$ and $\mathfrak{T}_i:\Zq^r \times\G\to\G$ defined by mapping $y \mapsto yH_{\texttt{base}}(yG)$ and $(\underline{y}, Y) \mapsto y_i H_{\texttt{base}}(Y)$ are indistinguishable from random oracles.
+\end{cor}
+
+\subsection{Correctness}
+
+
+
+\begin{theorem}
+FROSTLASS is a correct LTM scheme under \cref{def:correctness}.
+\end{theorem}
+\begin{proof}
+In event $E_2$, consider the ring signature shares $\psig_i^\prime$, $\psig_i^{\prime \prime}$, and $\psig_i^*$. These have some corresponding indices $j^\prime, j^{\prime \prime}$, and $j^*$, respectively, and we write these ring signature shares as follows.
+\begin{align*}
+\forall i \in \left[\left|\VK^\prime\right|\right], \psig_i^\prime =& (i, c_1^\prime, s_1^\prime, \ldots, s_{j^*-1}^\prime, s_{j^*, i}^\prime, s_{j^*+1}^\prime, \ldots, s_m^\prime),  \\
+\forall i \in \left[\left|\VK^{\prime\prime}\right|\right], \psig_i^\prime =& (i, c_1^\prime, s_1^\prime, \ldots, s_{j^*-1}^{\prime\prime}, s_{j^*, i}^{\prime\prime}, s_{j^*+1}^{\prime\prime}, \ldots, s_m^{\prime\prime}),  \\
+\forall i \in \left[\left|\VK^*\right|\right], \psig_i^* =& (i, c_1^*, s_1^*, \ldots, s_{j^*-1}^*, s_{j^*, i}^*, s_{j^*+1}^*, \ldots, s_m^*)
+\end{align*}  
+
+Each signer with index $i \in \left[\left|\VK^\prime\right|\right]$, computes the same seed, say $\gamma^\prime$ in event $E_1$, so $(s_j^\prime)_{j \neq j^{\prime}, i}$ is identical in each $\psig_i^\prime$, where $j^\prime$ is the ring index of the true signer for $\psig_i^\prime$. Similarly, each signer with index $i \in \left[\left|\VK^{\prime\prime}\right|\right]$ computes the same seed, say $\gamma^{\prime \prime}$, and $(s_j^{\prime \prime})_{j \neq j^{\prime \prime}, i}$ is identical in each $\psig_i^{\prime \prime}$, where $j^{\prime \prime}$ is the ring index of the true signer for $\psig_i^{\prime \prime}$. In event $E_1^*$, each signer with index $i \in \left[\left|\VK^{**}\right|\right]$ 
+compute the same seed $\gamma^*$, and $(s_j^*)_{j \neq j^*, i}$ is identical in each $\psig_i^*$, where $j^*$ is the index of the true signer of $\psig_i^*$. Moreover, these ring signature shares were all output from honest executions of $\sign$. 
+
+To show $\mathbb{P}[E_2] = 1$, it is sufficient to demonstrate that each $\psig_i^\prime$ passes $\verifyshare$ in $E_1$. Indeed, the ring signature shares $\psig_i^{\prime \prime}$ and $\psig_i^*$ are shown to be valid in a similar way, \textit{mutatis mutandis}. 
+
+In $E_1$, the points $L_{j^\prime}^\prime = \sum_i F_i$ and $R_{j^\prime}^\prime = \sum_i F_i^\prime$ are computed along with the starting signature challenge $c_{j^\prime+1}$.
+
+Then, for $j^* < j \leq m$, the following computations take place.
+\begin{align*}
+L_j^\prime =& s_j^\prime G + c_j^\prime W_j^\prime \\
+R_j^\prime =& s_j^\prime \widehat{Y}_j^\prime + c_j^\prime \mathfrak{W} \\
+c_{j+1} =& H_{\texttt{ch}}(\texttt{dst}_{j} \mid \mid \ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}} \mid \mid \mathfrak{W} \mid \mid \underline{W} \mid \mid \underline{\mu} \mid \mid L_{j} \mid \mid R_{j} \mid \mid \msg^\prime)
+\end{align*}
+Then the value $c_1 = c_{m+1}$ is set and, for $1 \leq j \leq j^*$, the same computations for $L_j^\prime, R_j^\prime, c_j^\prime$ take place. Lastly, each $s_{j^\prime, i}^\prime = d_i^\prime + \rho_i^\prime e_i^\prime + \lambda_i^\prime c_{j^\prime}^\prime y_i^\prime$ for the random scalars $d_i^\prime, e_i^\prime$, the corresponding aggregation coefficient $\rho_i^\prime$, Lagrange interpolation coefficient $\lambda_i^\prime$, and secret signing key share $y_i^\prime$.
+Thus, in $E_1$, the verifier computes $\gamma^\prime$ the same as the signer, and so samples $(s_j^\prime)_{j\neq j^\prime,i}$ identically to all the signers. Moreover, for each $1 \leq j \leq m^\prime$, 
+the signature nonce points satisfy $L_j^\prime = s_j^\prime G + c_j^\prime W_j^\prime$, $R_j^\prime = s_j^\prime \widehat{Y}_j^\prime + c_j^\prime \mathfrak{W}$, and the signature challenges satisfy the verification equations by construction, except $j=j^\prime$. 
+
+
+In event $E_3$, we have the following combined signatures.
+\begin{align*}
+\sig^\prime &= (c_1^\prime, s_1^\prime, \ldots, s_{j^\prime - 1}^\prime, \sum_i s_{j^\prime, i}^\prime, s_{j^\prime + 1}^\prime, \ldots, s_m^\prime, \lt^\prime) \\
+\sig^{\prime \prime} &= (c_1^{\prime \prime}, s_1^{\prime \prime}, \ldots, s_{j^{\prime \prime} - 1}^{\prime \prime}, \sum_i s_{j^{\prime \prime}, i}^{\prime \prime}, s_{j^{\prime \prime} + 1}^{\prime \prime}, \ldots, s_m^{\prime \prime}, \lt^{\prime \prime}) \\
+\sig^* &= (c_1^*, s_1^*, \ldots, s_{j^* - 1}^*, \sum_i s_{j^*, i}^*, s_{j^* + 1}^*, \ldots, s_m^*, \lt^*) 
+\end{align*}
+Moreover, the aggregation coefficients, aggregated ring members, point hashes of ring members' leading keys, and the seed are all computed exactly as in $\sign$ and $\verifyshare$. So, by construction, $c_1 = c_{m+1}$ and the circle of hashes pass verification.
+
+Lastly, consider events $E_4$, $E_5$, and $E_6$. $\link$ merely compares the linking tags. Moreover, as $\link$ is a check for equality of linking tags, it is necessarily commutative.
+In event $E_5$, $\sig^\prime$ and $\sig^{\prime \prime}$ are both computed from superthreshold subsets of $\VK$ with the same corresponding $\lt$, and so have identical linking tags $\mathfrak{T}$. 
+
+In event $E_6$, on the other hand, the signatures are computed for distinct $\tvk \neq \tvk^\prime$. By  \cref{cor:key_images_are_random_oracles}, $\mathfrak{T}(\tvk) \neq \mathfrak{T}(\tvk^\prime)$ except with negligible probability, so $\link(\sig^\prime, \sig^*) = \link(\sig^*, \sig^{\prime \prime}) = 0$ except with negligible probability.\end{proof}
+
+
+\subsection{Strong Unforgeability}
+
+\begin{theorem}\label{thm:suf}
+Let $\kappa_{\texttt{ch}}, \kappa_{\texttt{key}}, n_{\texttt{key}} \geq 1$ be integer parameters. For every PPT $(t, \epsilon)$-forger $\mathcal{A}$ as described in \cref{def:suf}, there exists a PPT $(t^\prime, \epsilon^\prime)$-player of the $(n_{\texttt{key}}\kappa_{\texttt{key}} - 1)$-OMDL game such that $t^\prime \in O(2t)$ and $\epsilon^\prime \in O(\frac{\epsilon^2}{\kappa_{\texttt{ch}}})$.
+\end{theorem}
+\begin{proof}
+We solve the $\kappa$-OMDL game by constructing a tower of algorithms $\mathcal{A}_4 \rightarrow \mathcal{A}_3 \rightarrow \mathcal{A}_2 \rightarrow \mathcal{A}_1$, where $\mathcal{A}_1 = \mathcal{A}$ is a forger, $\mathcal{A}_2$ is a simulator of the unforgeability challenger for $\mathcal{A}_1$, $\mathcal{A}_3 = \texttt{Fork}_{\mathcal{A}_2}$ is the forking algorithm of \cref{def:general_forking_algorithm}, and $\mathcal{A}_4 = \mathcal{A}^\prime$ plays the $\kappa$-OMDL game. These arrows indicate $\mathcal{A}_4$ runs $\mathcal{A}_3$ as a subroutine, and so on. We discuss these in order beginning with $\mathcal{A}_1$, the forger.
+
+\textbf{The forger.} Let $\mathcal{A}_1$ be a $(t_1, \epsilon_1)$-algorithm which is an LTM strong forger of FROSTLASS as described in \cref{def:suf} and runs with some random tape $\tau_{\mathcal{A}_1}$. $\mathcal{A}_1$ has access to the oracles $\keyOracle$, $\corruptionOracle$, and $\signingOracle$ from \cref{def:common_setup} via \cref{def:suf}, 
+and all the random oracles $H_{\texttt{label}}$ with $\texttt{label} \in \left\{\texttt{base}, \texttt{seed}, (\texttt{FROST}, i), (\texttt{kb}, k), \texttt{ch}\right\}$ for $i \in \mathbb{N}$ and $k \in [d-1]$ from \cref{def:frostlass}. 
+
+\textbf{Wrap the forger.}  We first wrap $\mathcal{A}_1$ in an algorithm $\mathcal{A}_2$. This $\mathcal{A}_2$ simulates the forgery challenger for $\mathcal{A}_1$ and is compatible with \cref{def:general_forking_algorithm}, and is a helper algorithm for playing \cref{def:omdl} which requires oracle access; we denote the oracles of \cref{def:omdl} with $\keyOracle^*$ and $\corruptionOracle^*$ to prevent confusion. $\mathcal{A}_2$ works as follows. 
+\begin{enumerate}
+\item Initialize empty tables $T_{\texttt{label}}$ for $\texttt{label} \in \left\{\texttt{base}, \texttt{seed}, (\texttt{FROST},i), (\lt, k), \texttt{ch}, \texttt{DL}\right\}$.
+\item Run $\mathcal{A}_1$ as a subroutine. As a simulator of the game of \cref{def:suf}, $\mathcal{A}_2$ handles all oracle queries made by $\mathcal{A}_1$ as follows.
+\begin{enumerate}
+\item For $\texttt{label} \in \left\{\texttt{seed}, (\texttt{FROST},i), (\lt, y), (\lt, k) \mid i \in [n_{\texttt{key}}], k \in [d-1]\right\}$, when $\mathcal{A}_1$ queries $H_{\texttt{label}}$, $\mathcal{A}_3$ simulates responses using its own internal random tape, resampling in the event of a collision, and storing query-response pairs as key-value pairs in hash tables $T_{\texttt{label}}$ to maintain consistency with later queries. We assume handling these queries requires no other oracle queries, takes negligible time, and certainly succeeds. These simulations are indistinguishable from real oracles, as they are directly simulated from the random tape of $\mathcal{A}_2$.
+
+
+\item When $\mathcal{A}_1$ makes some $\texttt{query}$ to $H_{\texttt{ch}}$ and $\texttt{query} \notin T_{\texttt{ch}}$, $\mathcal{A}_2$ computes $i = \left|T_{\texttt{ch}}\right|+1$, finds $h_i \in \underline{h}$, stores $T_{\texttt{ch}}[\texttt{query}] = (i, h_i)$, and responds with $h_i$.  We assume handling these queries requires no other oracle queries, takes negligible time, and succeeds with certainty.
+
+\item When $\mathcal{A}_1$ makes some $\texttt{query}$ to $H_{\texttt{base}}$, $\mathcal{A}_2$ checks if $\texttt{query} \notin T_{\texttt{base}}$. If so, $\mathcal{A}_2$ samples $\alpha \leftarrow \Zq$, resampling in the case of a collision, and sets $T_{\texttt{base}}[\texttt{query}] = \alpha$. The response is computed in two cases.
+\begin{enumerate}
+\item If $\texttt{query} \notin \mathbb{G}$, then $\mathcal{A}_2$ samples $Y \leftarrow \mathbb{G}$ and responds with $\alpha Y$.
+\item Otherwise, $\mathcal{A}_2$ parses $Y \leftarrow \texttt{query}$, and responds with $\alpha Y$.
+\end{enumerate}
+This query requires no further oracle access, takes the time to sample $\alpha \sample \Zq$, possibly the time it takes to sample $Y \in \G$, and the time it takes to compute $\alpha Y$, a scalar multiplication of a point. Thus, this query takes time at most $t_{\texttt{base}} \approx t_{q} + t_\mathbb{G} + t_{\texttt{scmul}}$, where $t_q$ is the time it takes to sample $\alpha$, $t_\mathbb{G}$ is the time it takes to sample $Y \in \mathbb{G}$, and $t_{\texttt{scmul}}$ is the time it takes to compute $\alpha Y$. This query certainly succeeds.
+
+
+\item When $\mathcal{A}_1$ queries $\keyOracle$ with some pair $(n,r)$, $\mathcal{A}_2$ does the following.
+\begin{enumerate}
+\item If $r \notin [n]$, output a distinct failure symbol and terminate.
+\item Otherwise, for each $i \in [n]$, make a query $Y_i \leftarrow \keyOracle^*(\ast)$ from \cref{def:omdl}.
+\item Compute $Y = \sum_{i \in [n]} Y_i$.
+\item Sample $(z_1, \ldots, z_{d-1}) \leftarrow \Zq^{d-1}$.
+\item Compute each $Z_k = z_k G$ and store $T_{\texttt{DL}}[Z_k] = z_k$.
+\item Simulate a query made to $H_{\texttt{base}}$ by $\mathcal{A}_1$, $\widehat{Y} = H_{\texttt{base}}(Y)$.
+\item Retrieve $\alpha = T_{\texttt{base}}[Y]$; this table entry is non-empty with certainty due to the previous step.
+\item Set $\mathfrak{T} = \alpha Y$, $\mathfrak{T}_i = \alpha Y_i$, and each $\mathfrak{D}_k = \alpha Z_k$ for each $i \in [n]$ and each $k \in [d-1]$.
+
+\item Set $\tvk = (Y, Z_1, \ldots, Z_{d-1})$, $\lt = (\mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})$, each $\vk_i = (Y_i, Z_1, \ldots, Z_{d-1})$, and each $\lt_i = (\mathfrak{T}_i, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})$. 
+\item Store $T_{\lt}[\vk_i] = \lt_i$ and $T_{\tlt}[\vk] = \tlt$. 
+\item Respond with $(\tvk, \VK)$. 
+\end{enumerate}
+Handling one $\keyOracle$ query takes $n$ queries to $\keyOracle^*$ and one query to $H_{\texttt{base}}$, $n^2$ sums of points from $\G$, $(d-1)$ samples from $\Zq$, and $2d+1$ scalar multiplications against points. This query takes time at most $t_{\texttt{key}} \approx nt_{\texttt{key}}^* + n^2 t_+ + (d-1)t_{q} + (1+2d)t_{\texttt{scmul}} + t_{\texttt{base}}$, where $t_{\texttt{key}}^*$ is the time it takes to query $\keyOracle^*$, $t_+$ is the time it takes to sum two arbitrary group elements, and $t_{\texttt{base}}$ is the time it takes to simulate a query $H_{\texttt{base}}$. This query succeeds with certainty.
+
+\item When $\mathcal{A}_1$ queries $\corruptionOracle$ with some $(i, (\tvk, \VK))$, $\mathcal{A}_2$ parses $(Y_i, Z_1, \ldots, Z_{d-1}) := \vk_i$. If this is not possible, then $\corruptionOracle$ responds with a distinct failure symbol. 
+Otherwise, $\mathcal{A}_2$ looks up $z_k \leftarrow T_{\texttt{DL}}[Z_k]$ for each $k$. If this is not possible, then $\corruptionOracle$ responds with a distinct failure symbol. Otherwise, $\mathcal{A}_2$ queries $y_i \leftarrow \corruptionOracle^*(Y_i)$, sets $T_{\texttt{corrupt}}[Y_i] = y_i$, and responds with $(y_i, z_1, \ldots, z_{d-1})$.
+
+This query takes one query to $\corruptionOracle^*$ and $d-1$ retrievals from $T_{\texttt{DL}}$. As this is a hash table, lookups are constant-time, so this query takes time at most $t_{\texttt{corrupt}} = t_{\texttt{corrupt}}^* + (d-1)O(1)$.  Moreover, this query fails if and only if $\mathcal{A}_1$ makes a query that is not a challenge key. By assumption, $\mathcal{A}_1$ prefers to fail than to make a failed corruption oracle query, so without loss of generality, this corruption oracle certainly succeeds.
+
+This is also the only oracle which may fail if queried incorrectly, say with non-challenge data.
+
+\item When $\mathcal{A}_1$ queries $\signingOracle$ with some $(\msg, \ring, \tvk, \VK, \vk)$, $\mathcal{A}_2$ does the following to back-patch an ostensibly valid signature.
+\begin{enumerate}
+\item If $(\tvk, \VK^\prime)$ does not appear as a $\keyOracle$ response to $\mathcal{A}_1$ for any $\VK \subseteq \VK^\prime$, or $\tvk \notin \ring$, output a distinct failure symbol and terminate.
+\item Otherwise, there is some query made by $\mathcal{A}_1$ to $\keyOracle$ with keys matching this $\signingOracle$ query, say $(\tvk, \VK^\prime) \leftarrow \keyOracle(n,r)$ occurred for some $\VK \subseteq \VK^\prime$. If $\left|\VK\right| < r$, or $\left|\VK^\prime\right| \neq n$, output a distinct failure symbol and terminate.  
+\item Otherwise, there is a superthreshold number of signers in the coalition and the correct total number of keyholders. Parse $(Y, Z_1, \ldots, Z_{d-1}) := \tvk$.
+\item Retrieve $\alpha = T_{\texttt{base}}[Y]$, then compute $\mathfrak{T} = \alpha Y$ and each $\mathfrak{D}_k = \alpha Z_k$. Set $\tlt = (\mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})$.
+
+\item Simulate a query made to $H_{\texttt{base}}$ by $\mathcal{A}_1$, say $\widehat{Y}_j = H_{\texttt{base}}(Y_j)$, for each ring members' linking keys $Y_j$ (i.e.\ for each $j \in [m]$).
+\item Simulate a query made to $H_{\lt}^*$ and $H_{\lt, k}$ from $\mathcal{A}_1$ for each $k \in [d-1]$ to obtain $\mu_Y = H_{\lt}^*(\ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}})$ and $\mu_k = H_{\lt, k}(\ring \mid \mid \tlt \mid \mid \underline{\widehat{Y}})$ for each $k \in [d-1]$.
+\item Compute $W_j = \mu_Y Y_j + \sum_k \mu_k Z_{j,k}$ for each ring member $\tvk_j = (Y_j, Z_{j,1}, \ldots, Z_{j,d-1})$.
+\item Compute $\mathfrak{W} = \mu_Y \mathfrak{T} + \sum_k \mu_k \mathfrak{D}_k$.
+\item Sample $s_1, \ldots, s_m \leftarrow \Zq$.
+\item Retrieve $i^* = \left|T_{\texttt{ch}}\right| + 1$ and the challenges $h_{i^*}, h_{i^*+1}, \ldots, h_{i^*+m-1} \leftarrow \underline{h}$.
+\item Find $j^* \in [m]$ such that $\tvk_{j^*} = \tvk$.
+\item Set the following:
+\begin{align*}
+c_{j^*+1} &= h_{i^*} & c_m &= h_{i^* + (m-j^* - 1)} \\
+c_{j^*+2} &= h_{i^*+1} & c_1 &= h_{i^* + (m-j^*)} \\
+c_{j^*+3} &= h_{i^*+2} & c_2 &= h_{i^* + (m-j^*) + 1} \\
+\vdots & & \vdots & \\
+c_{m-2} &= h_{i^* + (m-j^*-3)} & c_{j^* - 1} &= h_{i^* + (m-2)} \\
+c_{m-1} &= h_{i^* + (m-j^*-2)} & c_{j^*} &= h_{i^* + (m-1)}
+\end{align*}
+\item If any
+$\texttt{query} = \signaturequery \in T_{\texttt{ch}}$, then output a distinct failure symbol and terminate. 
+
+\item For $j \in [m]$, $T_{\texttt{ch}}\signaturequery := c_{j+1}$.
+\item Set $\sig = (c_1, s_1, \ldots, s_m, \mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})$.
+\item Respond with $\sig$.
+\end{enumerate}
+This query requires one simulated query to $H_{\lt}^*$, one query to $H_{\lt, k}$ for each $k \in [d-1]$, and one query to $H_{\texttt{base}}$ for each ring member. This query requires a lookup in $T_{\texttt{key}}$, a lookup in $T_{\texttt{key}}$, a lookup in $T_{\texttt{base}}$, and $m$ lookups in $\underline{h}$. This query takes time $t_{\texttt{\sign}} \approx t_{\lt, y} + (d-1)t_{\lt,k} + t_{\texttt{base}} + (2+m)O(1)$. The only way this algorithm fails is if $\mathcal{A}_1$ makes a poorly-formed query. By assumption, $\mathcal{A}_1$ prefers to output a distinct failure symbol than do so. That is, this simulation of $\signingOracle$ succeeds with certainty. 
+\end{enumerate}
+
+
+\item If $\mathcal{A}_1$ outputs a distinct failure symbol and terminates, then $\mathcal{A}_2$ outputs a distinct failure symbol and terminates.
+\item Otherwise, $\texttt{out}_{1} \leftarrow \mathcal{A}_1$. In this event, $\mathcal{A}_2$ parses $(\msg, \ring, \sig) \leftarrow \texttt{out}_1$, sets $m = \left|\ring\right|$, and then does the following.
+\begin{enumerate}
+\item Find all queries $\texttt{query} \in T_{\texttt{ch}}$, $\ell \in [\kappa_{\texttt{ch}}]$, $j \in [m]$, $c\in\Zq$ such that $T_{\texttt{ch}}[\texttt{query}]=(\ell, c)$, $\tvk_j \in \ring$, and $c=c_{j+1}$ is used to verify $\sig$; call this set of queries $S$.
+\item \label{step:whereA2fails} If $S = \emptyset$, output a distinct failure symbol and terminate.
+\item Otherwise, find the argument $\texttt{query} \in S$ which minimizes $\ell \in T_{\texttt{ch}}[\texttt{query}]$; i.e.\ the index of the first $H_{\texttt{ch}}$ query used during verification.
+\item Set $\texttt{tables}$ to consist of all the tables $\left\{T_{\texttt{label}}\right\}$.
+\item Set $\texttt{out}_2 = (\ell, \texttt{out}_1, \texttt{tables})$ for this minimal $\ell$.
+\end{enumerate}
+\item Output $\texttt{out}_2$.
+\end{enumerate}
+
+The random oracles $H_{\texttt{seed}}$, $H_{\texttt{FROST}, i}$, $H_{\lt, k}$, and $H_{\texttt{base}}$ are all clearly simulated correctly, in the standard way which is indistinguishable from random oracles.  Moreover, $H_{\texttt{ch}}$ is also simulated correctly, up to the quality of the randomness used for the input $\underline{h}$. $\corruptionOracle$ is also correct, as the simulator knows the table $T_{\texttt{DL}}$ and has access to $\corruptionOracle^*$. 
+Certainly $\keyOracle$ is simulated correctly, as the computation of the $Y_i$ and $Y$ points correctly simulates FROST key generation, and the remainder of the response is computed honestly.
+Now, consider $\signingOracle$. By construction, the output of $\signingOracle$ is a ring signature which passes verification. Moreover, since $H_{\lt,k}$ and $H_{\texttt{base}}$ are simulated correctly, this simulation of $\signingOracle$ is correct, also, at least up to randomness used to sample $\underline{h}$.
+Thus, $\mathcal{A}_2$ is a correct simulation of the unforgeability challenger for $\mathcal{A}_1$.
+
+Now, consider the runtime of $\mathcal{A}_2$. If $t_{\texttt{label}}$ denotes the time it takes to simulate each query made to $H_{\texttt{label}}$ or $\mathcal{O}_{\texttt{label}}$, and $\kappa_{\texttt{label}}$ is the number of such queries, then $\mathcal{A}_2$ takes up to $\kappa_{\texttt{label}}t_{\texttt{label}}$ time for all these queries to $H_{\texttt{label}}$. So, $\mathcal{A}_2$ takes time
+\begin{align*}
+t_2 &\approx  t_1 + n_{\texttt{key}}\kappa_{\texttt{key}}t_{\texttt{key}} + \kappa_{\sign}t_{\sign} +  \kappa_{\texttt{base}}t_{\texttt{base}} + \sum_{\texttt{label} \notin \left\{\texttt{key}, \sign, \texttt{base}\right\} }\kappa_{\texttt{label}} t_{\texttt{label}} \\
+&\approx  t_1 + n_{\texttt{key}}\kappa_{\texttt{key}}t_{\texttt{key}} + \kappa_{\sign}t_{\sign} +  \kappa_{\texttt{base}}t_{\texttt{base}}
+\end{align*}where the times $t_{\texttt{label}}$ in the sum are assumed to be negligible, and where $\mathcal{A}_1$ makes some $\kappa_{\texttt{key}}$ queries to $\keyOracle$, and each of these is handled with up to $n_{\texttt{key}}$ queries to $\keyOracle^*$. Although we assume querying $\keyOracle^*$ takes negligible time, the wrapper used to simulate responses from $\keyOracle$ requires sampling randomness and assembling the response. 
+
+Now consider the success probability. Certainly $\mathcal{A}_2$ succeeds at simulating all oracle queries, so $\mathcal{A}_2$ can only terminate with a distinct failure symbol if $\mathcal{A}_1$ fails, or if no index $\ell$ exists as described above.
+However, we claim that if if $\mathcal{A}_1$ succeeds, then $T_{\texttt{ch}}$ contains a suitable pair $(\ell,  c)$ except with negligible probability. Indeed, if $\mathcal{A}_1$ outputs a successful forgery with ring signature $\sig = (c_1, \underline{s}, \tlt)$ which passes verification, then $\mathcal{A}_1$ selected this signature to satisfy the verification equations
+
+For this forgery to pass verification, these $c_j$ must be consistent with responses from the random oracle $H_{\texttt{ch}}$ when queried by a verifier. So, $\mathcal{A}_1$ guessed or queried $H_{\texttt{ch}}$ for these $c_j$.
+Guessing one $\Zq$ output of $H_{\texttt{ch}}$ successfully from amongst some $\kappa \in \N$ queries succeeds with probability at most $\prod_{i \in [\kappa]} (q-i)^{-1}$, which is negligible in $q$.  Since $q \in \polysecpar$, this probability is negligible in $\secpar$. Thus, the probability that no index $\ell$ can be found is negligible, and $\epsilon_2 \approx \epsilon_1$. 
+
+
+
+
+
+
+\textbf{Fork this simulator.} 
+Note that $\mathcal{A}_2$ is compatible with \cref{def:general_forking_algorithm}, leading to the forking algorithm.
+Define $\mathcal{A}_3$ to be similar to $\texttt{Fork}_{\mathcal{A}_2}$ as in 
+\cref{def:general_forking_algorithm}, except with oracle access to $\keyOracle^*$ and $\corruptionOracle^*$ from \cref{def:omdl}. Then \cref{lem:general_forking_lemma} implies $\mathcal{A}_3$ is a PPT $(t_3, \epsilon_3)$-algorithm where
+\begin{align*}
+t_3  &= 2t_2+t_2^\prime \approx 2t_2 \in \negl \\
+ \epsilon_3 &= \epsilon_2\left(\frac{\epsilon_2}{\kappa_{\texttt{ch}}} - \frac{1}{q-1}\right) \in O\left(\frac{\epsilon_2^2}{\kappa_{\texttt{ch}}}\right)
+\end{align*} where $t_2^\prime \in \negl$ is the additional time it takes to sample randomness in \cref{def:general_forking_algorithm}. 
+
+\textbf{Solve OMDL.} Lastly, we build an algorithm $\mathcal{A}_4$ which has access to $\keyOracle^*$ and $\corruptionOracle^*$ as defined in \cref{def:omdl} (and which we assume take negligible time to invoke), runs $\mathcal{A}_3$ as a subroutine, and plays the $\kappa$-OMDL game in time at most $t_4$ and succeeds with probability at least $\epsilon_4$ as follows, where $\kappa =n_{\texttt{key}}\kappa_{\texttt{key}} - 1$.
+
+Observe that $\mathcal{A}_2$ makes some $\texttt{query}$ at the fork point. Moreover, this fork point is selected so that the response appears in verification. Thus, $\texttt{query} = \signaturequery$ for some $j \in [m]$ and for some points $L_j, R_j \in \G$, and $T_{\texttt{ch}}[\texttt{query}] = c_{j+1}$. All data available to $\mathcal{A}_2$, as well as its random tape, are identical until the fork point. Thus, the queries are identical on both sides of the fork with certainty, but by the definition of \cref{def:general_forking_algorithm}, the responses vary in both transcripts except with negligible probability. In particular, the points $L_j$ and $R_j$ are common to both transcripts with certainty.  That is to say, we see the same query with two responses appear as in the following diagram.
+\[
+\begin{tikzcd}[row sep=large, column sep=0pt] 
+    H_{\texttt{ch}}\signaturequery \arrow[d, shift left, shift left, shift left] \arrow[d, shift right, shift right, shift right] \\
+    c_{j+1} \neq c^\prime_{j+1}
+\end{tikzcd}
+\]
+That is to say, on one side of the fork, the same query yields the response $c_{j+1}$, and on the other side of the fork, the different response $c_{j+1}\neq c_{j+1}^\prime$.
+Since $\lt = (\mathfrak{T}, \mathfrak{D}_1, \ldots, \mathfrak{D}_{d-1})$ appears in this query, these points are certainly identical on both sides of the fork. 
+\begin{enumerate}
+\item Run $\mathcal{A}_3$ as a subroutine, responding to $\keyOracle^*$ and $\corruptionOracle^*$ queries by consulting these oracles and responding faithfully.  If $\mathcal{A}_3$ fails, then $\mathcal{A}_4$ outputs a distinct failure symbol and terminates. This step takes time $t_3$ and succeeds (terminates without a failure symbol) with probability $\epsilon_3$.
+
+\item Otherwise, $\texttt{out}_{\mathcal{A}_3} \leftarrow \mathcal{A}_3$. If $\mathcal{A}_4$ cannot parse $(\ell, (\texttt{out}_{\mathcal{A}_1}, \texttt{tables}), (\texttt{out}_{\mathcal{A}_1}^\prime, \texttt{tables}^\prime)) := \texttt{out}_{\mathcal{A}_3}$, then $\mathcal{A}_4$ outputs a distinct failure symbol and terminates. This takes negligible time. By construction of $\mathcal{A}_4$, this step, conditioned on the success of the previous step, certainly succeeds.
+
+\item Otherwise, $\mathcal{A}_4$ attempts to parse the following.
+\begin{align*}
+(\msg, \ring, \sig) &:= \texttt{out}_{\mathcal{A}_1} & (\msg^\prime, \ring^\prime, \sig^\prime) &:= \texttt{out}_{\mathcal{A}_1}^\prime \\
+(\tvk_1, \ldots, \tvk_m) &:= \ring, &
+(\tvk_1^\prime, \ldots, \tvk_{m^\prime}^\prime) &:= \ring^\prime, \\
+(c_1, \underline{s}, \tlt) &:= \sig &
+(c_1^\prime, \underline{s}^\prime, \tlt^\prime) &:= \sig^\prime \\
+(\mathfrak{T}, \underline{\mathfrak{D}}) &:= \tlt & (\mathfrak{T}^\prime, \underline{\mathfrak{D}}^\prime) &:= \tlt 
+\end{align*} If $\mathcal{A}_4$ cannot parse this, then $\mathcal{A}_4$ outputs a distinct failure symbol and terminates. By construction of $\mathcal{A}_3$, this step, conditioned on the success of the previous step, certainly succeeds.
+
+\item For each $j \in [m]$, $\mathcal{A}_4$ searches for each $\texttt{query}_j$ such that $T_{\texttt{ch}}[\texttt{query}_j]=(\ell_j, c_{j+1})$. This $\ell_j$ is the $H_{\texttt{ch}}$ query index whose response is $c_{j+1}$ used during verification. For the signature challenge $c_{j+1}$ used in verification, call this set $S_1$. Recalling that the forger makes all these queries to $H_{\texttt{ch}}$ in every successful transcript except with negligible probability, then conditioned on the success of the previous steps, this step succeeds except with negligible probability. Moreover, this step takes time at most $O(\kappa_{\texttt{ch}})$ in case we must touch every entry in $T_{\texttt{ch}}$.
+
+\item Find the $j^* \in [m]$ such that $\texttt{query}_{j^*} \in S$ minimizes $\ell_{j^*} \in T_{\texttt{ch}}[\texttt{query}_{j^*}]$. This way, $c_{j^*}$ is the first oracle response used during verification.
+
+\item $\mathcal{A}_4$ parses $\signaturequerystar:= \texttt{query}_{j^*}$ for some points $L_{j^*}, R_{j^*} \in \G$. If $\mathcal{A}_4$ cannot do this, then $\mathcal{A}_4$ outputs a distinct failure symbol and terminates. This takes negligible time. Say this step succeeds with probability $\epsilon^\prime$, and see below.
+
+\item For this $j^*$, parse $(Y_{j^*}, Z_{j^*, 1}, \ldots, Z_{j^*, d-1}) := \tvk_{j^*}$ (where $\tvk_{j^*} \in \ring$). Retrieve $\mu_y \leftarrow T_{\lt}^*[\ring \mid \mid \tlt]$ and, for each $k \in [d-1]$, $\mu_k \leftarrow T_{\lt, k}[\ring \mid \mid \tlt]$.
+
+\item $\mathcal{A}_4$ computes $\widetilde{w}_{j^*} = \frac{s_{j^*} - s_{j^*}^\prime}{c_{j^*}^\prime - c_{j^*}}$. This takes the time of two negations, two additions, an inversion, and a multiplication in $\Zq$, say $2t_{\texttt{neg}} + 2t_{+} + t_{\texttt{inv}} + t_{\texttt{mul}}$. By the construction of $\mathcal{A}_3$, and conditioned on the previous step's success, $c_{j^*}^\prime \neq c_{j^*}$ with certainty, so this step succeeds with certainty.
+
+\item $\mathcal{A}_4$ finds a response $(\tvk, \VK) \leftarrow \keyOracle(n,r)$ to a query made by $\mathcal{A}_1$ such that $\tvk = \tvk_{j^*}$, and parses $(\vk_1, \ldots, \vk_n) := \VK$. This takes negligible time, and, conditioned on the success of the previous step, this step certainly succeeds.
+
+
+\item If $\tvk_{j^*} \in \mathcal{L}^{\texttt{tot}}_{\texttt{corrupt}}$, output a distinct failure symbol and terminate. Otherwise, for this $\VK$, let $C = \VK \cap \mathcal{L}_{\texttt{corrupt}}$ be the set of corrupted public verification key shares corresponding to the total verification key ring member $\tvk_j$. This step takes negligible time. Moreover, conditioned on the success of the previous step, this step succeeds with certainty. Indeed, $\mathcal{A}_1$ would have failed (causing a cascade of failures) if too many key shares had been corrupted.
+
+
+\item Otherwise, $\left|C\right| < r-1$. In this event, $\mathcal{A}_4$ selects $r-1-\left|C\right|$ uncorrupted keys associated with $\tvk_{j^*}$ to parse, say $(Y_i, Z_1, \ldots, Z_{d-1}) := \vk_i$, and corrupts them by querying $y_i \leftarrow \corruptionOracle^*(Y_i)$, until $\left|C\right| = r-1$ exactly. This step takes negligible time and certainly succeeds. 
+
+\item Compute the indices $I \subseteq [n]$ of keys in $\VK$ corresponding to the elements in $C$, and compute the Lagrange interpolation coefficients $\lambda_i$ for $I \in [n]$.
+
+\item $\mathcal{A}_4$ picks an uncorrupted challenge key of $\VK$, say $\vk_{i^*}$, and parses $(y_{i^*}, z_1, \ldots, z_{d-1}) :=  \vk_{i^*}$. This is the target challenge key. This step takes negligible time and succeeds with certainty.
+
+\item $\mathcal{A}_4$ computes the Lagrange interpolation coefficients corresponding to the target challenge key $\vk_{i^*}$ and the corrupted keys $(Y_i, Z_1, \ldots, Z_{d-1})$ for each $i \in I$. Call these $\lambda_{i^*}$ for $\vk_{i^*}$, and $\lambda_i$ for each $\vk_i$ with $i \in I$. This takes $r(r-1)$ multiplications and certainly succeeds. Moreover, the Lagrange interpolation coefficients are all nonzero with certainty.
+
+
+\item $\mathcal{A}_4$ computes the following.
+\begin{align*}
+z^* &= \sum_{k \in [d-1]} \mu_k z_k \\
+\overline{y} &= \sum_{i \in I, i \neq i^*} \lambda_i y_i \\
+y_{j^*,i^*} &= \lambda_{i^*}^{-1}\left(\mu_y^{-1}\left(\widetilde{w}_{j^*} - z^*\right) - \overline{y}\right)
+\end{align*} Then $\mathcal{A}_4$ sets $\texttt{out}_4 = \mathcal{L}_{\texttt{corrupt}} \cup \left\{y_{j^*, i^*}\right\}$.
+Computing $z^*$ takes time $(d-1)t_{\texttt{mul}} + (d-1)t_{+}$, computing $\overline{y}$ takes time $(r-1)t_{\texttt{mul}} + (r-1)t_{+}$, and computing $y_{j^*,i^*}$ from these takes time $2t_{\texttt{mul}} + 2t_{+}$. These all certainly succeed. Thus, this step takes $(r+d)(t_{\texttt{mul}} + t_+)$ time.
+\end{enumerate}
+
+Consider the correctness of the composition of all these algorithms $\mathcal{A}_4$ through $\mathcal{A}_1$ as a $\kappa$-OMDL player. Given the auxiliary keys $z_1, \ldots, z_{d-1}$ and the aggregation coefficients, the aggregated key $w$ yields the linking key $y=\mu_Y^{-1}(w-\sum_k \mu_k z_k)$, and given the $r-1$ corrupted secret signing key shares $y_i$ and the value $y$, Lagrange interpolation implies $y = \lambda_{i^*} y_{j^*,i^*} + \sum_{i \in I, i \neq i^*} \lambda_i y_{i}$. Moreover, since this is a successful forgery, all ring members are challenge keys. Solving these for $y_{j^*,i^*}$ provides correctness.
+
+Now consider the runtime. $\mathcal{A}_4$ takes time \[t_4 \approx t_3 + (r+2)t_{+} + 3t_{\texttt{inv}} + 2t_{\texttt{scmul}} + O(\kappa_{\texttt{ch}}) + 2t_{\texttt{neg}} + r^2t_{\texttt{mul}} + (r-1-\left|C\right|)t_{\texttt{corrupt}}\] obtained by summing the times of each step above. However, $r$ is selected by $\mathcal{A}_4$ in the course of executing $\mathcal{A}_1$. Moreover, the strongest adversary corrupts no keys at all. So, we use $r \leq n \leq n_{\texttt{ch}}$ and $r-1-\left|C\right| \leq n_{\texttt{ch}}-1$ to obtain \[t_4 \approx t_3 + (n_{\texttt{ch}}+2)t_{+} + 3t_{\texttt{inv}} + 2t_{\texttt{scmul}} + O(\kappa_{\texttt{ch}}) + 2t_{\texttt{neg}} + n_{\texttt{ch}}^2t_{\texttt{mul}} + (n_{\texttt{ch}}-1)t_{\texttt{corrupt}}.\] 
+
+However, $t_3 \approx 2t_2 \approx 2(t_1 + n_{\texttt{key}}\kappa_{\texttt{key}}t_{\texttt{key}} + \kappa_{\sign}t_{\sign} + \kappa_{\texttt{corrupt}}t_{\texttt{corrupt}} + \kappa_{\texttt{base}} t_{\texttt{base}})$, so $t_4 \approx 2t_1 + \widetilde{t}$ where
+\begin{align*}
+\widetilde{t} =& 2n_{\texttt{key}}\kappa_{\texttt{key}}t_{\texttt{key}} + 2\kappa_\sign t_\sign + 2\kappa_{\texttt{corrupt}}t_{\texttt{corrupt}} + 2\kappa_{\texttt{base}}t_{\texttt{base}} + \\
+& (n_{\texttt{ch}}+2)t_{+} + 3t_{\texttt{inv}} + 2t_{\texttt{scmul}} + O(\kappa_{\texttt{ch}}) + 2t_{\texttt{neg}} + n_{\texttt{ch}}^2t_{\texttt{mul}} + (n_{\texttt{ch}}-1)t_{\texttt{corrupt}}
+\end{align*}
+
+Now consider success probability. If $\mathcal{A}_3$ succeeds, $\mathcal{A}_4$ can fail if the $\texttt{query}$ made to $H_{\texttt{ch}}$ such that $T_{\texttt{ch}}[\texttt{query}]=(\ell, c)$ cannot be parsed as $\signaturequery$. We denoted above the probability that $\texttt{query}$ cannot be parsed appropriately with $\epsilon^\prime$.
+
+All that remains is to show $\epsilon^\prime$ is negligible. Indeed, the $\texttt{query}$ satisfies $T_{\texttt{ch}}[\texttt{query}]=(\ell, c)$ where $c=c_{j+1}$ is used in verification.  If $\texttt{query}$ cannot be parsed as $\signaturequery$, but $c_{j+1}$ is used in verification, then there is some other $\texttt{query}^\prime \in T_{\texttt{ch}}$ with this $c$. This is a second pre-image for $\texttt{query}$ for the random oracle $H_{\texttt{ch}}$, so this $\epsilon^\prime \in \negl$.
+
+\end{proof}
+
+
+
+\subsection{Linkability}
+
+
+\begin{theorem}
+FROSTLASS is linkable under \cref{def:linkable}. 
+\end{theorem}
+\begin{proof}
+Let $\kappa \in \mathbb{N}$ and let $\mathcal{A}$ be a $\kappa$-linkability breaker. 
+
+We build a tower of algorithms, $\mathcal{A}_3 \to \mathcal{A}_2 \to \mathcal{A}_1$, where $\mathcal{A}_1 = \mathcal{A}$, similar to those in \cref{thm:suf}, to extract the discrete logarithm of an aggregated ring member which is under adversarial control. We use this discrete logarithm to show the linkability tag is, except with negligible probability, the image of the linking key under a collision-resistant function.
+
+First, recall $\mathcal{A}_2$ in \cref{thm:suf} was a five-step algorithm. We let $\mathcal{A}_2$ operate similarly to $\mathcal{A}_2$ from \cref{thm:suf}, modifying the following steps:
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Otherwise, $\texttt{out}_1 \leftarrow \mathcal{A}_1$. In this event, $\mathcal{A}_2$ parses the first message-ring-signature triple present, $(\msg, \ring, \sig) \leftarrow \texttt{out}_1$, sets $m = \left|\ring\right|$, and does the following.
+\begin{enumerate}
+\item Find all queries $\texttt{query} \in T_{\texttt{ch}}$, $\ell \in [\kappa_{\texttt{ch}}]$, $j \in [m]$, $c \in \Zq$ such that $T_{\texttt{ch}}[\texttt{query}] = (\ell, c)$, $\tvk_j \in \ring$ is not an uncorrupted challenge key, and $c=c_{j+1}$ is used to verify $\sig$; call this set of queries $S$.
+\end{enumerate}
+\end{enumerate}
+All other steps are otherwise similar to \cref{thm:suf}. That we fork only on queries related to uncorrupted challenge keys is critically important here, just as forking only on challenge keys was critical in \cref{thm:suf}. As before, $\mathcal{A}_2$ is compatible with the forking algorithm, so let $\mathcal{A}_3 = \texttt{Fork}_{\mathcal{A}_2}$ as in \cref{thm:suf}. Now consider a successful output of $\mathcal{A}_3$. 
+
+The forking query  $\signaturequerystar$ is the same on both sides of the fork. Moreover, in one transcript we obtain $L_{j^*} = s_{j^*} G + c_{j^*} W_{j^*}$ where $W_{j^*}$ is the aggregation of the ring member with index $j^*$, and in the other transcript the same $L_{j^*}$ satisfies $L_{j^*} = s_{j^*}^\prime G + c_{j^*}^\prime W_{j^*}$. Thus, just as before, we obtain the discrete logarithm $W_{j^*} = \frac{s_{j^*} - s_{j^*}^\prime}{c_{j^*}^\prime - c_{j^*}}G$. However, this $W_{j^*} = \mu_Y Y_{j^*} + \sum_k \mu_k Z_{j^*,k}$. Thus, if $y_{j^*}$ is the discrete logarithm of $Y_{j^*}$ with respect to $G$ and each $z_{j^*,k}$ is the discrete logarithm of $Z_{j^*,k}$ with respect to $G$, then $\frac{s_{j^*} - s_{j^*}^\prime}{c_{j^*}^\prime - c_{j^*}} = \mu_Y y_{j^*} + \sum_k \mu_k z_{j^*,k}$. Note this equation holds for these scalars, even though we do not (and perhaps even $\mathcal{A}$ may not) know them.
+
+Also, we obtain in one transcript $R_{j^*} = s_{j^*} \widehat{Y}_{j^*} + c_{j^*} \mathfrak{W}$ where $\mathfrak{W}$ is the aggregation of the linking tag base points $\mathfrak{T}$ and $\mathfrak{D}_k$. In the other transcript, the same $R_{j^*}$ satisfies $R_{j^*} = s_{j^*}^\prime \widehat{Y}_{j^*} + c_{j^*}^\prime \mathfrak{W}$. Thus, just as before, we obtain the discrete logarithm $\mathfrak{W} = \frac{s_{j^*} - s_{j^*}^\prime}{c_{j^*}^\prime - c_{j^*}}\widehat{Y}_{j^*}$. However, $\mathfrak{W} = \mu_Y \mathfrak{T} + \sum_k \mu_k \mathfrak{D}_k$, so $\frac{s_{j^*} - s_{j^*}^\prime}{c_{j^*}^\prime - c_{j^*}}\widehat{Y}_{j^*} = \mu_Y \mathfrak{T} + \sum_k \mu_k \mathfrak{D}_k$.
+Re-arranging, we have $\mu_Y\left(y_{j^*} \widehat{Y}_{j^*} - \mathfrak{T}\right) + \sum_k \mu_k\left(z_{j^*,k} \widehat{Y}_{j^*} - \mathfrak{D}_k\right) = 0$, which can only be satisfied if $\mathfrak{T} = \widehat{Y}_{j^*}$, except with negligible probability. 
+Since $\mathfrak{T}$ is a collision-resistant function of $y_{j^*}$, we conclude that valid signatures, except with negligible probability, have linking tags which are collision-resistant functions of some ring member which is not an uncorrupted challenge key. This prevents more linking tags than linking keys.
+\end{proof}
+
+
+
+
+
+
+\bibliographystyle{amsplain}
+\bibliography{sources.bib}
+
+
+
+
+\end{document}
